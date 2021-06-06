@@ -1,4 +1,4 @@
-#include "scop.c"
+#include "scop.h"
 
 void check_shader_compile(unsigned int shader)
 {
@@ -26,9 +26,9 @@ unsigned int create_shader_part(char *path_vertex, int type)
 	}
 	vertexShaderSource[readed] = '\0';
 	vertexShader = glCreateShader(type);
-	glShaderSource(vertexShader, 1, &(const char *)vertexShaderSourceConst, NULL);
+	glShaderSource(vertexShader, 1, (const char *const *)vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
-	check_shader_compile(vertexShader)
+	check_shader_compile(vertexShader);
 	return (vertexShader);
 }
 
@@ -39,6 +39,8 @@ unsigned int create_shader(char *path_vertex, char* path_fragment)
 	unsigned int vertexShader;
 	unsigned int fragmentShader;
 	unsigned int shaderProgram;
+	GLint			success;
+	char infoLog[512];
 
 	vertexShader = create_shader_part(path_vertex, GL_VERTEX_SHADER);
 	fragmentShader = create_shader_part(path_vertex, GL_FRAGMENT_SHADER);

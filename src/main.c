@@ -6,7 +6,7 @@
 /*   By: sergey <sergey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/14 19:03:32 by kpsylock          #+#    #+#             */
-/*   Updated: 2021/05/15 13:55:02 by sergey           ###   ########.fr       */
+/*   Updated: 2021/06/06 22:59:08 by sergey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,97 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	printf("%s\n", "frame changed");
+	// printf("%s\n", "frame changed");
+}
+
+
+void processInput(GLFWwindow *window)
+{
+	// if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	// 	glfwSetWindowShouldClose(window, 1);
+	
+	// if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	// {
+	// 	mix_scale += 0.05f;
+	// 	if (mix_scale > 1.0)
+	// 		mix_scale = 1.0f;
+	// }
+	// if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	// {
+	// 	mix_scale -= 0.05f;
+	// 	if (mix_scale < 0.0f)
+	// 		mix_scale = 0.0f;
+	// }
+
+
+    // const float cameraSpeed = 5.0f * delta_time; // настройте по вашему усмотрению
+    // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	// 	{
+	// 		vec3_t temp_v =  vec3_create(camera_front);
+	// 		vec3_scale(temp_v, cameraSpeed, 0);
+	// 		vec3_add(camera_pos, temp_v, 0);
+	// 		free(temp_v);
+	// 	}
+    // if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	// 	{
+	// 		vec3_t temp_v =  vec3_create(camera_front);
+	// 		vec3_scale(temp_v, cameraSpeed, 0);
+	// 		vec3_subtract(camera_pos, temp_v, 0);
+	// 		free(temp_v);
+	// 	}
+    // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	// 	{
+    //     	// camera_pos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	// 		vec3_t temp_v =  vec3_create(camera_front);
+	// 		vec3_cross(camera_front, camera_up, temp_v);
+	// 		vec3_normalize(temp_v, 0);
+	// 		vec3_scale(temp_v, cameraSpeed, 0);
+	// 		vec3_subtract(camera_pos, temp_v, 0);
+	// 		free(temp_v);
+	// 		printf("%s\n", "GLFW_KEY_A");
+	// 	}
+    // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	// 	{
+    //     	// camera_pos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	// 		vec3_t temp_v =  vec3_create(camera_front);
+	// 		vec3_cross(camera_front, camera_up, temp_v);
+	// 		vec3_normalize(temp_v, 0);
+	// 		vec3_scale(temp_v, cameraSpeed, 0);
+	// 		vec3_add(camera_pos, temp_v, 0);
+	// 		free(temp_v);
+	// 		printf("%s\n", "GLFW_KEY_D");
+	// 	}
+	// if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	// 	{
+    //     	// camera_pos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	// 		mat4_t temp_m = mat4_identity(0);
+	// 		mat4_rotate(temp_m, 0.01f, camera_up, 0);
+	// 		mat4_multiplyVec4(temp_m, camera_front, 0);
+	// 		free(temp_m);
+	// 		// vec3_t temp_v =  vec3_create(camera_front);
+	// 		// vec3_cross(camera_front, camera_up, temp_v);
+	// 		// vec3_normalize(temp_v, 0);
+	// 		// vec3_scale(temp_v, cameraSpeed, 0);
+	// 		// vec3_add(camera_pos, temp_v, 0);
+	// 		// free(temp_v);
+	// 		// printf("%s\n", "GLFW_KEY_D");
+	// 	}
+	// if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	// 	{
+    //     	// camera_pos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	// 		mat4_t temp_m = mat4_identity(0);
+	// 		mat4_rotate(temp_m, -0.01f, camera_up, 0);
+	// 		mat4_multiplyVec4(temp_m, camera_front, 0);
+	// 		free(temp_m);
+	// 		// vec3_t temp_v =  vec3_create(camera_front);
+	// 		// vec3_cross(camera_front, camera_up, temp_v);
+	// 		// vec3_normalize(temp_v, 0);
+	// 		// vec3_scale(temp_v, cameraSpeed, 0);
+	// 		// vec3_add(camera_pos, temp_v, 0);
+	// 		// free(temp_v);
+	// 		// printf("%s\n", "GLFW_KEY_D");
+	// 	}
+
 }
 
 
@@ -31,85 +121,77 @@ void init_app(t_env *env)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
-	if (window == NULL)
+	env->window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
+	if (env->window == NULL)
 	{
 		glfwTerminate();
 		exit(1);
 	}
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(env->window);
 	// glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	// glfwSetCursorPosCallback(window, mouse_callback);
 	// glfwSetScrollCallback(window, scroll_callback);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glEnable(GL_DEPTH_TEST);
 }
 
 void init_positions(t_env *env)
 {
+	float temp[3];
+	set_vec3(0.0f, 0.0f, 0.0f, temp);
 	set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
 	set_vec3(0.0f, 0.0f, 1.0f, env->camera.front);
-	set_vec3(0.0f, 1.0f, 0.0f env->camera.up);
-	mat4_identity(env->camera.view);
-	mat4_t proj = mat4_perspective((float)fov, (800.0f + mix_scale)/600.0f, 0.1f, 100.0f, 0);
-	
+	set_vec3(0.0f, 1.0f, 0.0f, env->camera.up);
+	mat4_perspective(0.1f, 800.0f/600.0f, 0.1f, 100.0f, env->camera.proj);
+	mat4_create_camera_matrix(env->camera.pos, temp, env->camera.up, env->camera.view);
 }
 
 void load_obj_to_gpu(t_env *env)
 {
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	unsigned int EBO;
-	glGenBuffers(1, &EBO);
+	glGenVertexArrays(1, &env->buffs.vao);
+	glGenBuffers(1, &env->buffs.vbo);
+	glGenBuffers(1, &env->buffs.ebo);
 
-	glBindVertexArray(VAO);
-
-
-	int nrAttributes;
-	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-	printf("Maximum nr of vertex attributes supported: %d\n", nrAttributes);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
+	glBindVertexArray(env->buffs.vao);
+	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
+	glBufferData(GL_ARRAY_BUFFER, env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, env->object->triangels.size, env->object->triangels.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	
 }
 
 
 void start_main_loop(t_env *env)
 {
-	while(!glfwWindowShouldClose(window))
+	float temp[3];
+	
+	glUseProgram(env->shader);
+	glUniformMatrix4fv(glGetUniformLocation(env->shader, "projection"), 1, GL_FALSE, env->camera.proj);
+	while(!glfwWindowShouldClose(env->window))
 	{
 		usleep(20000);
-		float current_time = glfwGetTime();
-		delta_time = current_time - last_frame;
-		last_frame = current_time;
+		// float current_time = glfwGetTime();
+		// delta_time = current_time - last_frame;
+		// last_frame = current_time;
 		// printf("%f  %f\n", current_time, delta_time);
 
-		processInput(window);
+		processInput(env->window);
 		glClearColor(0.2f, 0.9f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
-		mat4_lookAt(camera_pos, vec3_add(camera_pos, camera_front, temp), camera_up, view);
+		glUseProgram(env->shader);
+		glBindVertexArray(env->buffs.vao); // ?????
+		mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, env->camera.front, temp), env->camera.up, env->camera.view);
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
-			glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, view);
+		// glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
+		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
 			
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	}
-	glfwSwapBuffers(window);
+		glDrawElements(GL_TRIANGLES, env->object->verticles.size, GL_UNSIGNED_INT, 0);
+		glfwSwapBuffers(env->window);
 		glfwPollEvents();
+	}
 }
 
 
@@ -147,7 +229,7 @@ int		open_file(char *path)
 void free_memory(t_env *env)
 {
 	glfwTerminate();
-	glDeleteProgram();
+	glDeleteProgram(env->shader);
 	// Delete all!
 }
 
@@ -168,10 +250,10 @@ int		main(int argc, char **argv)
 		exit(0);
 	}
 	init_app(&env);
-	init_positions(&env)
+	init_positions(&env);
 	env.shader = create_shader(VERTEX_SHADER, FRAGMENT_SHADER);
 	
 	load_obj_to_gpu(&env);
-	start_main_loop(env);
-	free_memory();
+	start_main_loop(&env);
+	free_memory(&env);
 }

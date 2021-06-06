@@ -6,7 +6,7 @@
 /*   By: sergey <sergey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/14 19:02:59 by kpsylock          #+#    #+#             */
-/*   Updated: 2021/05/10 13:40:33 by sergey           ###   ########.fr       */
+/*   Updated: 2021/06/06 17:04:08 by sergey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void parse_verticles(t_obj *obj, char *str)
 	{
 		// проверить, что будет в случае исключений!!
 		while (*str && *str == ' ' && str++);
-		ft_float_vector_push_back(&obj->verticles, ft_float_atoi(str));
+		if (ft_float_vector_push_back(&obj->verticles, ft_float_atoi(str)))
+			exit(1);
 		while (*str && (ft_isdigit(*str) || *str == '.' || *str == '-') && str++);
 	}
 }
@@ -69,7 +70,8 @@ void parse_triangle(t_obj *obj, char *str)
 	{
 		// проверить, что будет в случае исключений!!
 		while (*str && *str == ' ' && str++);
-		ft_int_vector_push_back(&obj->triangels, ft_float_atoi(str));
+		if (ft_int_vector_push_back(&obj->triangels, ft_atoi(str)))
+			exit(1);
 		while (*str && (ft_isdigit(*str)) && str++);
 	}
 }
