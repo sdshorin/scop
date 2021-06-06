@@ -19,18 +19,19 @@ SRCS = $(addprefix $(SRC_DIR),$(SRCS_LIST))
 OBJS = $(SRCS:.c=.o)
 
 INCLUDES = -I $(INC_DIR) -I $(LIBFT_DIR)
-
+OPENGL_INCLUDES =  -I/usr/local/Cellar/glfw/3.3.2/include
+OPENGL_SOURCES =-framework OpenGl -framework Cocoa  -lglfw3 -framework CoreVideo -framework IOKit -lSOIL
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = #-Wall -Wextra -Werror -g
 
 all: $(NAME)
 
 %.o: %.c $(addprefix $(INC_DIR),$(HEADERS_LIST))
-	@$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+	@$(CC) $(CFLAGS) $(INCLUDES) $(OPENGL_INCLUDES) -o $@ -c $<
 	@echo ".\c"
 
 $(NAME): $(LIBFT) $(OBJS)
-	@$(CC) $(CFLAGS) $(LFT) $(INCLUDES) $(OBJS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(LFT) $(INCLUDES) $(OPENGL_SOURCES) $(OPENGL_INCLUDES) $(OBJS) -o $(NAME)
 	@echo "$(NAME_PS) executable created"
 
 $(LIBFT):
