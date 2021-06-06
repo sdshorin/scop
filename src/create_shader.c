@@ -1,6 +1,6 @@
 #include "scop.h"
 
-void check_shader_compile(unsigned int shader)
+void check_shader_compile(unsigned int shader, char *path)
 {
 	int  success;
 	char infoLog[512];
@@ -8,16 +8,21 @@ void check_shader_compile(unsigned int shader)
 	if(!success)
 	{
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n%s\n", infoLog);
+		printf("ERROR::SHADER::%s::COMPILATION_FAILED\n%s\n", path, infoLog);
 		exit(1);
 	} 
 }
 
+
+
+
 unsigned int create_shader_part(char *path_vertex, int type)
 {
+	current_path(9);
 	char vertexShaderSource[1024*8];
 	int fd = open(path_vertex, O_RDONLY);
 	int readed = 0;
+	const char *s;
 	unsigned int vertexShader;
 	if (fd < 0 || (readed = read(fd, vertexShaderSource, 1024*8 - 1)) == (1024*8 - 1))
 	{
@@ -26,9 +31,10 @@ unsigned int create_shader_part(char *path_vertex, int type)
 	}
 	vertexShaderSource[readed] = '\0';
 	vertexShader = glCreateShader(type);
-	glShaderSource(vertexShader, 1, (const char *const *)vertexShaderSource, NULL);
+	s = vertexShaderSource;
+	glShaderSource(vertexShader, 1, &s, NULL);
 	glCompileShader(vertexShader);
-	check_shader_compile(vertexShader);
+	check_shader_compile(vertexShader, path_vertex);
 	return (vertexShader);
 }
 
@@ -43,7 +49,7 @@ unsigned int create_shader(char *path_vertex, char* path_fragment)
 	char infoLog[512];
 
 	vertexShader = create_shader_part(path_vertex, GL_VERTEX_SHADER);
-	fragmentShader = create_shader_part(path_vertex, GL_FRAGMENT_SHADER);
+	fragmentShader = create_shader_part(path_fragment, GL_FRAGMENT_SHADER);
 	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
@@ -51,7 +57,7 @@ unsigned int create_shader(char *path_vertex, char* path_fragment)
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if(!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n%s\n", infoLog);
+		printf("ERROR::SHADER::%s::COMPILATION_FAILED\n%s\n", path_vertex, infoLog);
 	}
 	// glUseProgram(shaderProgram);
 	glDeleteShader(vertexShader);

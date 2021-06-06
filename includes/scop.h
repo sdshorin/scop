@@ -9,19 +9,33 @@
 # define __gl_h_
 # define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
 #endif
-#include <OpenGL/gl3.h>
+
 #include <GLFW/glfw3.h>
+#include <OpenGL/gl3.h>
 
 #include <fcntl.h>
 #include "libft.h"
 
 
-# include <stdio.h>
+
+#include <unistd.h>
+#include <stdio.h>
+#include <limits.h>
 
 
 
-#define VERTEX_SHADER "./shaders/4.1.materials.vs"
-#define FRAGMENT_SHADER "./shaders/4.1.materials.fs"
+int current_path(int i);
+void check_error(int i);
+void print_matrix(char *name, float *mat);
+
+
+
+
+
+
+
+#define VERTEX_SHADER "shaders/4.1.materials.vs"
+#define FRAGMENT_SHADER "shaders/4.1.materials.fs"
 
 #define numeric_t float
 

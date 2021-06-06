@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sergey <sergey@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/14 19:03:32 by kpsylock          #+#    #+#             */
-/*   Updated: 2021/06/06 22:59:08 by sergey           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "scop.h"
 #include <fcntl.h>
@@ -111,14 +100,27 @@ void processInput(GLFWwindow *window)
 }
 
 
-
+void print_matrix(char *name, float *mat)
+{
+	int row, columns;
+	printf("mat %s:\n", name);
+	for (row=0; row<4; row++)
+	{
+		for(columns=0; columns<4; columns++)
+		{
+			printf("%f     ", mat[row * 4 + columns]);
+		}
+		printf("\n");
+	}
+}
 
 void init_app(t_env *env)
 {
+
 	if (!glfwInit())
         exit(1);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	env->window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
@@ -138,11 +140,11 @@ void init_app(t_env *env)
 void init_positions(t_env *env)
 {
 	float temp[3];
-	set_vec3(0.0f, 0.0f, 0.0f, temp);
 	set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
 	set_vec3(0.0f, 0.0f, 1.0f, env->camera.front);
+	vec3_add(env->camera.pos, env->camera.front, temp);
 	set_vec3(0.0f, 1.0f, 0.0f, env->camera.up);
-	mat4_perspective(0.1f, 800.0f/600.0f, 0.1f, 100.0f, env->camera.proj);
+	mat4_perspective(0.079f, 800.0f/600.0f, 0.1f, 100.0f, env->camera.proj);
 	mat4_create_camera_matrix(env->camera.pos, temp, env->camera.up, env->camera.view);
 }
 
@@ -170,8 +172,10 @@ void start_main_loop(t_env *env)
 	
 	glUseProgram(env->shader);
 	glUniformMatrix4fv(glGetUniformLocation(env->shader, "projection"), 1, GL_FALSE, env->camera.proj);
+	check_error(3);
 	while(!glfwWindowShouldClose(env->window))
 	{
+		check_error(4);
 		usleep(20000);
 		// float current_time = glfwGetTime();
 		// delta_time = current_time - last_frame;
@@ -184,13 +188,16 @@ void start_main_loop(t_env *env)
 		glUseProgram(env->shader);
 		glBindVertexArray(env->buffs.vao); // ?????
 		mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, env->camera.front, temp), env->camera.up, env->camera.view);
-
+		check_error(5);
 		// glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
+		check_error(6);
 			
 		glDrawElements(GL_TRIANGLES, env->object->verticles.size, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(env->window);
+		check_error(7);
 		glfwPollEvents();
+		check_error(8);
 	}
 }
 
@@ -233,6 +240,22 @@ void free_memory(t_env *env)
 	// Delete all!
 }
 
+int current_path(int i) {
+   char cwd[200];
+   if (getcwd(cwd, sizeof(cwd)) != NULL) {
+       printf("%d Current working dir: %s\n", i, cwd);
+   } else {
+       perror("getcwd() error");
+       return 1;
+   }
+   return 0;
+}
+
+void check_error(int i)
+{
+	if (glGetError())
+		printf("%d ERROR!  %d", i, glGetError());
+}
 
 int		main(int argc, char **argv)
 {
@@ -249,11 +272,14 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
+	// check_error(0);
 	init_app(&env);
 	init_positions(&env);
+	check_error(1);
 	env.shader = create_shader(VERTEX_SHADER, FRAGMENT_SHADER);
 	
 	load_obj_to_gpu(&env);
+	check_error(2);
 	start_main_loop(&env);
 	free_memory(&env);
 }
