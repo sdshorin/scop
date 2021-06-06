@@ -46,6 +46,7 @@ typedef numeric_t *mat4_t;
 typedef struct s_obj {
 	t_int_vector triangels;
 	t_float_vector verticles;
+	float model[16];
 }  t_obj;
 
 typedef struct s_camera {
@@ -93,6 +94,7 @@ vec3_t  vec3_add(vec3_t a, vec3_t b, vec3_t dest);
 mat4_t mat4_identity(float *dest);
 mat4_t mat4_perspective(float h_1, float aspect, float n, float f, float *mat);
 mat4_t mat4_create_camera_matrix(vec3_t pos, vec3_t target, vec3_t up, mat4_t result);
+float *mat4_scale(float *mat, float scale);
 
 
 

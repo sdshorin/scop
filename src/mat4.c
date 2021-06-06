@@ -26,7 +26,14 @@ mat4_t mat4_identity(float *dest) {
     dest[15] = 1;
     return dest;
 }
-
+float *mat4_scale(float *mat, float scale)
+{
+    mat4_identity(mat);
+    mat[0] *= scale;
+    mat[5] *= scale;
+    mat[10] *= scale;
+    mat[5] *= scale;
+}
 
 
 mat4_t mat4_perspective(float h_1, float aspect, float n, float f, float *mat)

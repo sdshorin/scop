@@ -10,10 +10,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow *window, t_env *env, float delta_time)
 {
-	// if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	// 	glfwSetWindowShouldClose(window, 1);
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, 1);
 	
 	// if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	// {
@@ -29,21 +29,27 @@ void processInput(GLFWwindow *window)
 	// }
 
 
-    // const float cameraSpeed = 5.0f * delta_time; // настройте по вашему усмотрению
-    // if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	// 	{
-	// 		vec3_t temp_v =  vec3_create(camera_front);
-	// 		vec3_scale(temp_v, cameraSpeed, 0);
-	// 		vec3_add(camera_pos, temp_v, 0);
-	// 		free(temp_v);
-	// 	}
-    // if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	// 	{
-	// 		vec3_t temp_v =  vec3_create(camera_front);
-	// 		vec3_scale(temp_v, cameraSpeed, 0);
-	// 		vec3_subtract(camera_pos, temp_v, 0);
-	// 		free(temp_v);
-	// 	}
+    const float cameraSpeed = 5.0f * delta_time; // настройте по вашему усмотрению
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			env->camera.pos[0] += env->camera.front[0] * cameraSpeed;
+			env->camera.pos[1] += env->camera.front[1] * cameraSpeed;
+			env->camera.pos[2] += env->camera.front[2] * cameraSpeed;
+			// vec3_t temp_v =  vec3_create(camera_front);
+			// vec3_scale(temp_v, cameraSpeed, 0);
+			// vec3_add(camera_pos, temp_v, 0);
+			// free(temp_v);
+		}
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			// vec3_t temp_v =  vec3_create(camera_front);
+			// vec3_scale(temp_v, cameraSpeed, 0);
+			// vec3_subtract(camera_pos, temp_v, 0);
+			// free(temp_v);
+			env->camera.pos[0] -= env->camera.front[0] * cameraSpeed;
+			env->camera.pos[1] -= env->camera.front[1] * cameraSpeed;
+			env->camera.pos[2] -= env->camera.front[2] * cameraSpeed;
+		}
     // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	// 	{
     //     	// camera_pos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
@@ -140,12 +146,14 @@ void init_app(t_env *env)
 void init_positions(t_env *env)
 {
 	float temp[3];
-	set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
+	set_vec3(0.0f, 0.0f, 15.0f, env->camera.pos);
+	// set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
 	set_vec3(0.0f, 0.0f, 1.0f, env->camera.front);
 	vec3_add(env->camera.pos, env->camera.front, temp);
 	set_vec3(0.0f, 1.0f, 0.0f, env->camera.up);
 	mat4_perspective(0.079f, 800.0f/600.0f, 0.1f, 100.0f, env->camera.proj);
 	mat4_create_camera_matrix(env->camera.pos, temp, env->camera.up, env->camera.view);
+	print_matrix("view", env->camera.view);
 }
 
 void load_obj_to_gpu(t_env *env)
@@ -169,20 +177,23 @@ void load_obj_to_gpu(t_env *env)
 void start_main_loop(t_env *env)
 {
 	float temp[3];
+	float delta_time;
+	float last_frame;
 	
 	glUseProgram(env->shader);
 	glUniformMatrix4fv(glGetUniformLocation(env->shader, "projection"), 1, GL_FALSE, env->camera.proj);
+	glUniformMatrix4fv(glGetUniformLocation(env->shader, "model"), 1, GL_FALSE, env->object->model);
 	check_error(3);
 	while(!glfwWindowShouldClose(env->window))
 	{
 		check_error(4);
 		usleep(20000);
-		// float current_time = glfwGetTime();
-		// delta_time = current_time - last_frame;
-		// last_frame = current_time;
+		float current_time = glfwGetTime();
+		delta_time = current_time - last_frame;
+		last_frame = current_time;
 		// printf("%f  %f\n", current_time, delta_time);
 
-		processInput(env->window);
+		processInput(env->window, env, delta_time);
 		glClearColor(0.2f, 0.9f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(env->shader);
@@ -272,6 +283,7 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
+	mat4_scale(env.object->model, 0.1);
 	// check_error(0);
 	init_app(&env);
 	init_positions(&env);
