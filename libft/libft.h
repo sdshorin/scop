@@ -6,7 +6,7 @@
 /*   By: sergey <sergey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/06 13:57:56 by kpsylock          #+#    #+#             */
-/*   Updated: 2021/05/10 12:58:47 by sergey           ###   ########.fr       */
+/*   Updated: 2021/06/07 23:00:06 by sergey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,13 @@ typedef struct	s_void_vector
 	size_t	size;
 	void	**data;
 }				t_void_vector;
+
+typedef struct	s_uint_vector
+{
+	size_t	capacity;
+	size_t	size;
+	unsigned int	*data;
+}				t_uint_vector;
 
 typedef struct	s_int_vector
 {
@@ -148,6 +155,14 @@ int				ft_int_vector_pop_back(t_int_vector *int_vector);
 int				ft_int_vector_copy(t_int_vector *dst, t_int_vector *src);
 void			ft_int_vector_reset(t_int_vector *src);
 int				ft_int_vector_push_front(t_int_vector *int_vector, int new_num);
+
+void			ft_uint_vector_free(t_uint_vector *int_vector);
+int				ft_uint_vector_init(t_uint_vector *int_vector);
+int				ft_uint_vector_push_back(t_uint_vector *int_vector, unsigned int i);
+unsigned int	ft_uint_vector_pop_back(t_uint_vector *int_vector);
+int				ft_uint_vector_copy(t_uint_vector *dst, t_uint_vector *src);
+void			ft_uint_vector_reset(t_uint_vector *src);
+int				ft_uint_vector_push_front(t_uint_vector *int_vector, unsigned int new_num);
 
 typedef struct	s_float_vector
 {

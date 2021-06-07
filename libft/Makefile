@@ -6,7 +6,7 @@
 #    By: sergey <sergey@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/22 16:16:39 by kpsylock          #+#    #+#              #
-#    Updated: 2021/05/10 13:24:46 by sergey           ###   ########.fr        #
+#    Updated: 2021/06/07 22:58:13 by sergey           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,9 @@ SOURCES = ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c ft_memmove.c ft_memchr
    ft_void_queue_resize.c ft_float_atoi.c \
    ft_float_vector_copy.c  ft_float_vector_reset_and_free.c \
    ft_float_vector_init.c ft_float_vector_pop_back.c ft_float_vector_push_back.c ft_float_vector_push_front.c \
+   ft_uint_vector_copy.c \
+   ft_uint_vector_init.c ft_uint_vector_pop_back.c ft_uint_vector_push_back.c ft_uint_vector_push_front.c \
+   ft_uint_vector_reset_and_free.c 
 
 OBJECTS = $(SOURCES:.c=.o)
 
