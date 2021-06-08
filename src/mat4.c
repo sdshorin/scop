@@ -35,14 +35,17 @@ float *mat4_scale(float *mat, float scale)
 }
 
 
-mat4_t mat4_perspective(float h_1, float aspect, float n, float f, float *mat)
+mat4_t mat4_perspective(float fov, float aspect, float n, float f, float *mat)
 {
+    float   h_1;
+    h_1 = n * tan(fov * 3.14159265358979323846 / 360.0);
+
     mat = mat4_identity(mat);
     mat[15] = 0;
     mat[11] = -1;
     mat[10] = (f + n) / (f - n);
     mat[14] = (-2 * f * n) / (f - n);
-    mat[5] = (2 * n) / h_1;
+    mat[5] = (2 * n) / (h_1 * 2);
     mat[0] = mat[5] / aspect ;
     return (mat);
 }

@@ -77,7 +77,6 @@ typedef struct s_env {
 
 
 t_obj			*create_object_from_file(int fd);
-mat4_t 			mat4_perspective(float h_1, float aspect, float n, float f, float *mat);
 
 
 
@@ -93,7 +92,7 @@ vec3_t  vec3_add(vec3_t a, vec3_t b, vec3_t dest);
 
 
 mat4_t mat4_identity(float *dest);
-mat4_t mat4_perspective(float h_1, float aspect, float n, float f, float *mat);
+mat4_t mat4_perspective(float fov, float aspect, float n, float f, float *mat);
 mat4_t mat4_create_camera_matrix(vec3_t pos, vec3_t target, vec3_t up, mat4_t result);
 float *mat4_scale(float *mat, float scale);
 
