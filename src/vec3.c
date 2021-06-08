@@ -24,11 +24,11 @@ vec3_t set_vec3(float a, float b, float c, float *dest)
     return dest;
 }
 
-vec3_t copy_vec3(float *src, float *dest)
+vec3_t copy_vec3_with_offset(float *src, float *dest, int offset)
 {
     dest[0] = src[0];
-    dest[1] = src[1];
-    dest[2] = src[2];
+    dest[offset] = src[1];
+    dest[2 * offset] = src[2];
     return dest;
 }
 

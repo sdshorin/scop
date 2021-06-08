@@ -14,7 +14,9 @@ void main()
     // Normal = mat3(transpose(inverse(model))) * aNormal;  
     
     // gl_Position = projection * view * vec4(FragPos, 1.0);
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+     gl_Position = projection * view * model * vec4(FragPos, 1.0);
+    // gl_Position = vec4(FragPos, 1.0) * projection * view * model ;
+    // gl_Position = vec4(aPos, 1.0) * model * view * projection;
    // gl_Position = vec4(normalize(aPos), 1.0);
    FragPos = gl_Position.xyz;
 }

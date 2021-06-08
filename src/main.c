@@ -190,17 +190,23 @@ void start_main_loop(t_env *env)
 	{
 		check_error(4);
 		usleep(20000);
+		printf(" 1ERROR!  %d\n", glGetError());
 		float current_time = glfwGetTime();
 		delta_time = current_time - last_frame;
 		last_frame = current_time;
 		// printf("%f  %f\n", current_time, delta_time);
 
+		printf(" 2ERROR!  %d\n", glGetError());
 		processInput(env->window, env, delta_time);
 		glClearColor(0.2f, 0.9f, 0.3f, 1.0f);
+		printf(" 3ERROR!  %d\n", glGetError());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(env->shader);
+		printf(" 4ERROR!  %d\n", glGetError());
 		glBindVertexArray(env->buffs.vao); // ?????
+		printf(" 45ERROR!  %d\n", glGetError());
 		mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, env->camera.front, temp), env->camera.up, env->camera.view);
+		printf(" 5ERROR!  %d\n", glGetError());
 		check_error(5);
 
 		// float camX = sin(glfwGetTime()) * 10.0f;
@@ -214,6 +220,7 @@ void start_main_loop(t_env *env)
 
 		// glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
+		printf(" 6ERROR!  %d\n", glGetError());
 		check_error(6);
 			
 		glDrawElements(GL_TRIANGLES, env->object->triangels.size, GL_UNSIGNED_INT, 0);
@@ -277,7 +284,7 @@ int current_path(int i) {
 void check_error(int i)
 {
 	if (glGetError())
-		printf("%d ERROR!  %d", i, glGetError());
+		printf("%d ERROR!  %d\n", i, glGetError());
 }
 
 int		main(int argc, char **argv)

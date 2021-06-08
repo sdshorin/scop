@@ -89,6 +89,7 @@ vec3_t  vec3_minus(vec3_t a, vec3_t b, vec3_t dest);
 vec3_t  vec3_norm(vec3_t vec);
 vec3_t  vec3_cross(vec3_t a, vec3_t b, vec3_t dest);
 vec3_t  vec3_add(vec3_t a, vec3_t b, vec3_t dest);
+vec3_t copy_vec3_with_offset(float *src, float *dest, int offset);
 
 
 mat4_t mat4_identity(float *dest);

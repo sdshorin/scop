@@ -99,18 +99,18 @@ mat4_t mat4_create_camera_matrix(vec3_t pos, vec3_t target, vec3_t up, mat4_t re
     vec3_norm(vec3_minus(pos, target, z_camera_dir));
     vec3_norm(vec3_cross(vec3_norm(up), z_camera_dir, x_camera_right));
     vec3_cross(z_camera_dir, x_camera_right, y_camera_up);
-    mat4_identity(temp1);
-    mat4_identity(temp2);
-    temp1[3] = pos[0];
-    temp1[7] = pos[1];
-    temp1[11] = pos[2];
+    mat4_identity(result);
+    // mat4_identity(temp2);
+    result[12] = -(x_camera_right[0] * pos[0] + x_camera_right[1] * pos[1] + x_camera_right[2] * pos[2]);
+    result[13] = -(y_camera_up[0] * pos[0] + y_camera_up[1] * pos[1] + y_camera_up[2] * pos[2]);
+    result[14] = -(z_camera_dir[0] * pos[0] + z_camera_dir[1] * pos[1] + z_camera_dir[2] * pos[2]);
     // temp1[12] = pos[0];
     // temp1[13] = pos[1];
     // temp1[14] = pos[2];
-    copy_vec3(x_camera_right, temp2);
-    copy_vec3(y_camera_up, temp2 + 4);
-    copy_vec3(z_camera_dir, temp2 + 8);
-    mat4_mult(temp2, temp1, result);
+    copy_vec3_with_offset(x_camera_right, result, 4);
+    copy_vec3_with_offset(y_camera_up, result + 4, 4);
+    copy_vec3_with_offset(z_camera_dir, result + 8, 4);
+    // mat4_mult(temp2, temp1, result);
     return (result);
 }
 
