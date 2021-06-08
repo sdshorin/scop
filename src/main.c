@@ -146,9 +146,9 @@ void init_app(t_env *env)
 void init_positions(t_env *env)
 {
 	float temp[3];
-	set_vec3(0.0f, 0.0f, 15.0f, env->camera.pos);
+	set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
 	// set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
-	set_vec3(0.0f, 0.0f, 1.0f, env->camera.front);
+	set_vec3(0.0f, 0.0f, -1.0f, env->camera.front);
 	vec3_add(env->camera.pos, env->camera.front, temp);
 	set_vec3(0.0f, 1.0f, 0.0f, env->camera.up);
 	mat4_perspective(0.079f, 800.0f/600.0f, 0.1f, 100.0f, env->camera.proj);
