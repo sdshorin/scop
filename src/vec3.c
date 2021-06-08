@@ -54,6 +54,10 @@ vec3_t  vec3_norm(vec3_t vec)
     float sum;
 
     sum = vec[0] + vec[1] + vec[2];
+    sum = vec[0] * vec[0] + vec[1] * vec[1]+ vec[2] * vec[2];
+    if (sum == 0.0)
+        return (vec);
+    sum = sqrt(sum);
     vec[0] /= sum;
     vec[1] /= sum;
     vec[2] /= sum;

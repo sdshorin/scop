@@ -164,13 +164,13 @@ void load_obj_to_gpu(t_env *env)
 
 	glBindVertexArray(env->buffs.vao);
 	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
-	glBufferData(GL_ARRAY_BUFFER, env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, env->object->triangels.size, env->object->triangels.data, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * env->object->triangels.size, env->object->triangels.data, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	// glEnableVertexAttribArray(1);
 }
 
 
@@ -204,7 +204,7 @@ void start_main_loop(t_env *env)
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
 		check_error(6);
 			
-		glDrawElements(GL_TRIANGLES, env->object->verticles.size, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, env->object->triangels.size, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(env->window);
 		check_error(7);
 		glfwPollEvents();
@@ -283,7 +283,7 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
-	mat4_scale(env.object->model, 0.1);
+	mat4_scale(env.object->model, 0.3);
 	// check_error(0);
 	init_app(&env);
 	init_positions(&env);

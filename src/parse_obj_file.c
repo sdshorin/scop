@@ -6,7 +6,7 @@
 /*   By: sergey <sergey@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/14 19:02:59 by kpsylock          #+#    #+#             */
-/*   Updated: 2021/06/06 17:04:08 by sergey           ###   ########.fr       */
+/*   Updated: 2021/06/08 12:45:44 by sergey           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void parse_verticles(t_obj *obj, char *str)
 	{
 		// проверить, что будет в случае исключений!!
 		while (*str && *str == ' ' && str++);
-		if (ft_float_vector_push_back(&obj->verticles, ft_float_atoi(str)))
+		if (ft_float_vector_push_back(&obj->verticles, (ft_float_atoi(str))))
 			exit(1);
 		while (*str && (ft_isdigit(*str) || *str == '.' || *str == '-') && str++);
 	}
@@ -70,7 +70,7 @@ void parse_triangle(t_obj *obj, char *str)
 	{
 		// проверить, что будет в случае исключений!!
 		while (*str && *str == ' ' && str++);
-		if (ft_int_vector_push_back(&obj->triangels, ft_atoi(str)))
+		if (ft_uint_vector_push_back(&obj->triangels, (unsigned int)(ft_atoi(str) - 1)))
 			exit(1);
 		while (*str && (ft_isdigit(*str)) && str++);
 	}
@@ -85,7 +85,7 @@ t_obj *create_obj_struct()
 		exit(0);
 	if (ft_float_vector_init(&obj->verticles))
 		exit(0);
-	if (ft_int_vector_init(&obj->triangels))
+	if (ft_uint_vector_init(&obj->triangels))
 		exit(0);
 	return (obj);
 }

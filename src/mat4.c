@@ -32,7 +32,6 @@ float *mat4_scale(float *mat, float scale)
     mat[0] *= scale;
     mat[5] *= scale;
     mat[10] *= scale;
-    mat[5] *= scale;
 }
 
 

@@ -15,6 +15,7 @@
 
 #include <fcntl.h>
 #include "libft.h"
+#include <math.h>
 
 
 
@@ -44,7 +45,7 @@ typedef numeric_t *mat4_t;
 
 
 typedef struct s_obj {
-	t_int_vector triangels;
+	t_uint_vector triangels;
 	t_float_vector verticles;
 	float model[16];
 }  t_obj;
