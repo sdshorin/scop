@@ -101,6 +101,9 @@ mat4_t mat4_create_camera_matrix(vec3_t pos, vec3_t target, vec3_t up, mat4_t re
     temp1[3] = pos[0];
     temp1[7] = pos[1];
     temp1[11] = pos[2];
+    // temp1[12] = pos[0];
+    // temp1[13] = pos[1];
+    // temp1[14] = pos[2];
     copy_vec3(x_camera_right, temp2);
     copy_vec3(y_camera_up, temp2 + 4);
     copy_vec3(z_camera_dir, temp2 + 8);

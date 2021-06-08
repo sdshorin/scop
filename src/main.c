@@ -177,6 +177,7 @@ void load_obj_to_gpu(t_env *env)
 void start_main_loop(t_env *env)
 {
 	float temp[3];
+	float up[3];
 	float delta_time;
 	float last_frame;
 	
@@ -200,6 +201,16 @@ void start_main_loop(t_env *env)
 		glBindVertexArray(env->buffs.vao); // ?????
 		mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, env->camera.front, temp), env->camera.up, env->camera.view);
 		check_error(5);
+
+		// float camX = sin(glfwGetTime()) * 10.0f;
+		// float camZ = cos(glfwGetTime())  * 10.0f;
+		// set_vec3(camX, 2.0, camZ, env->camera.pos);
+		// set_vec3(2.0, 2.0, 0.0, temp);
+		// set_vec3(0.0, 1.0, 0.0, up);
+		// mat4_create_camera_matrix(env->camera.pos, temp, up, env->camera.view);
+
+
+
 		// glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
 		check_error(6);
