@@ -43,7 +43,7 @@ mat4_t mat4_perspective(float fov, float aspect, float n, float f, float *mat)
     mat = mat4_identity(mat);
     mat[15] = 0;
     mat[11] = -1;
-    mat[10] = (f + n) / (f - n);
+    mat[10] = -(f + n) / (f - n);
     mat[14] = (-2 * f * n) / (f - n);
     mat[5] = (2 * n) / (h_1 * 2);
     mat[0] = mat[5] / aspect ;

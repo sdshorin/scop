@@ -3,12 +3,40 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
+# define  CHECK_ERROR() check_error(__LINE__);
+
+
+
+float vertices[] = {
+     // координаты      
+     0.5f,  0.5f, 1.0f,    // верхняя правая
+     0.5f, -0.5f, 1.0f,    // нижняя правая
+    -0.5f, -0.5f, 0.0f,   // нижняя левая
+    -0.5f,  0.5f, 0.0f,  // верхняя левая 
+};
+
+unsigned int indices[] = {
+        0, 1, 3, // первый треугольник
+        1, 2, 3  // второй треугольник
+    };
+
+
+
+
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	// printf("%s\n", "frame changed");
 }
 
+void print_view_status(t_env *env)
+{
+	printf("\ncamera_pos:( %f, %f, %f)\n", env->camera.pos[0], env->camera.pos[1], env->camera.pos[2]);
+	printf("pamera_front:( %f, %f, %f)\n", env->camera.front[0], env->camera.front[1], env->camera.front[2]);
+	printf("pamera_up:( %f, %f, %f)\n", env->camera.up[0], env->camera.up[1], env->camera.up[2]);
+	print_matrix("view", env->camera.view);
+}
 
 void processInput(GLFWwindow *window, t_env *env, float delta_time)
 {
@@ -146,7 +174,7 @@ void init_app(t_env *env)
 void init_positions(t_env *env)
 {
 	float temp[3];
-	set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
+	set_vec3(0.0f, 0.0f, 1.0f, env->camera.pos);
 	// set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
 	set_vec3(0.0f, 0.0f, -1.0f, env->camera.front);
 	vec3_add(env->camera.pos, env->camera.front, temp);
@@ -155,6 +183,7 @@ void init_positions(t_env *env)
 	mat4_create_camera_matrix(env->camera.pos, temp, env->camera.up, env->camera.view);
 	print_matrix("view", env->camera.view);
 	print_matrix("proj", env->camera.proj);
+	// exit(0);
 }
 
 void load_obj_to_gpu(t_env *env)
@@ -165,9 +194,11 @@ void load_obj_to_gpu(t_env *env)
 
 	glBindVertexArray(env->buffs.vao);
 	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * env->object->triangels.size, env->object->triangels.data, GL_STATIC_DRAW);
+	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -184,30 +215,33 @@ void start_main_loop(t_env *env)
 	
 	glUseProgram(env->shader);
 	glUniformMatrix4fv(glGetUniformLocation(env->shader, "projection"), 1, GL_FALSE, env->camera.proj);
+	print_matrix("proj------", env->camera.proj);
 	glUniformMatrix4fv(glGetUniformLocation(env->shader, "model"), 1, GL_FALSE, env->object->model);
 	check_error(3);
 	while(!glfwWindowShouldClose(env->window))
 	{
-		check_error(4);
+		CHECK_ERROR()
 		usleep(20000);
-		printf(" 1ERROR!  %d\n", glGetError());
+		// printf(" 1ERROR!  %d\n", glGetError());
 		float current_time = glfwGetTime();
 		delta_time = current_time - last_frame;
 		last_frame = current_time;
 		// printf("%f  %f\n", current_time, delta_time);
-
-		printf(" 2ERROR!  %d\n", glGetError());
+		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
+		glUniform1f(glGetUniformLocation(env->shader, "time"), current_time);
+		// printf(" 2ERROR!  %d\n", glGetError());
 		processInput(env->window, env, delta_time);
 		glClearColor(0.2f, 0.9f, 0.3f, 1.0f);
-		printf(" 3ERROR!  %d\n", glGetError());
+		// printf(" 3ERROR!  %d\n", glGetError());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(env->shader);
-		printf(" 4ERROR!  %d\n", glGetError());
+		// printf(" 4ERROR!  %d\n", glGetError());
 		glBindVertexArray(env->buffs.vao); // ?????
-		printf(" 45ERROR!  %d\n", glGetError());
+		// printf(" 45ERROR!  %d\n", glGetError());
 		mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, env->camera.front, temp), env->camera.up, env->camera.view);
-		printf(" 5ERROR!  %d\n", glGetError());
-		check_error(5);
+		//print_view_status(env);
+		// printf(" 5ERROR!  %d\n", glGetError());
+		CHECK_ERROR()
 
 		// float camX = sin(glfwGetTime()) * 10.0f;
 		// float camZ = cos(glfwGetTime())  * 10.0f;
@@ -220,14 +254,15 @@ void start_main_loop(t_env *env)
 
 		// glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
-		printf(" 6ERROR!  %d\n", glGetError());
-		check_error(6);
+		CHECK_ERROR()
 			
 		glDrawElements(GL_TRIANGLES, env->object->triangels.size, GL_UNSIGNED_INT, 0);
+		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 		glfwSwapBuffers(env->window);
-		check_error(7);
+		CHECK_ERROR()
 		glfwPollEvents();
-		check_error(8);
+		CHECK_ERROR()
 	}
 }
 
@@ -270,6 +305,8 @@ void free_memory(t_env *env)
 	// Delete all!
 }
 
+
+
 int current_path(int i) {
    char cwd[200];
    if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -284,7 +321,7 @@ int current_path(int i) {
 void check_error(int i)
 {
 	if (glGetError())
-		printf("%d ERROR!  %d\n", i, glGetError());
+		printf("Line %d ERROR!", i);
 }
 
 int		main(int argc, char **argv)
@@ -302,7 +339,7 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
-	mat4_scale(env.object->model, 0.3);
+	mat4_scale(env.object->model, 0.2);
 	// check_error(0);
 	init_app(&env);
 	init_positions(&env);
