@@ -108,8 +108,8 @@ mat4_t mat4_create_camera_matrix(vec3_t pos, vec3_t target, vec3_t up, mat4_t re
     // temp1[13] = pos[1];
     // temp1[14] = pos[2];
     copy_vec3_with_offset(x_camera_right, result, 4);
-    copy_vec3_with_offset(y_camera_up, result + 4, 4);
-    copy_vec3_with_offset(z_camera_dir, result + 8, 4);
+    copy_vec3_with_offset(y_camera_up, result + 1, 4);
+    copy_vec3_with_offset(z_camera_dir, result + 2, 4);
     // mat4_mult(temp2, temp1, result);
     return (result);
 }
