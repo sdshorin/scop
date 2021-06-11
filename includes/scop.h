@@ -24,6 +24,9 @@
 #include <limits.h>
 
 
+# define CAMERA_SENSITIVITY 0.05f
+#define PI 3.14159265
+
 
 int current_path(int i);
 void check_error(int i);
@@ -43,7 +46,7 @@ void print_matrix(char *name, float *mat);
 typedef float *vec3_t;
 typedef numeric_t *mat4_t;
 
-
+struct s_camera;
 typedef struct s_obj {
 	t_uint_vector triangels;
 	t_float_vector verticles;
@@ -56,6 +59,7 @@ typedef struct s_camera_look {
 	int is_inited;
 	float yaw; // по горизонтали
 	float pitch; // по вертикали
+	struct s_camera *camera;
 
 } t_camera_look ;
 

@@ -107,43 +107,41 @@ t_camera_look *get_camera_look()
 	return (&data);
 }
 
+void init_camera_look(t_camera_look *look, double x_pos, double y_pos)
+{
+	look->is_inited = 1;	
+	look->last_x = x_pos;
+	look->last_y = y_pos;
+	look->pitch = 0.0f;
+	look->yaw = -90.0f;
+}
 
-// void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-// {
-// 	if(firstMouse) // изначально установлено значение true
-// 	{
-// 		lastX = xpos;
-// 		lastY = ypos;
-// 		firstMouse =0 ;
-		
-// 	}
+void mouse_callback(GLFWwindow* window, double x_pos, double y_pos)
+{
+	t_camera_look *look;
+	float x_offset;
+	float y_offset;
+	float temp[3];
 
-// 	float xoffset = xpos - lastX;
-// 	float yoffset = lastY - ypos; // перевернуто, так как диапазон y-координаты определяется снизу вверх
-// 	lastX = xpos;
-// 	lastY = ypos;
-	
-// 	const float sensitivity = 0.05f;
-// 	xoffset *= sensitivity;
-// 	yoffset *= sensitivity;
-
-// 	yaw   += xoffset;
-// 	pitch += yoffset; 
-
-// 	if(pitch > 89.0f)
-// 		pitch =  89.0f;
-// 	if(pitch < -89.0f)
-// 		pitch = -89.0f;
-	
-// 	vec3_t direction =  vec3_create(0);
-// 	// glm::vec3 direction;
-	
-//     direction[0] = cos(yaw *PI/180) * cos(pitch *PI/180);
-//     direction[1] = sin(PI/180 * pitch);
-//     direction[2] = sin(yaw *PI/180) * cos(pitch *PI/180);
-//     vec3_normalize(direction, camera_front);
-// 	// glm::normalize(direction);
-// }
+	look = get_camera_look();
+	if (!look->is_inited)
+		init_camera_look(look, x_pos, y_pos);
+	x_offset = x_pos - look->last_x;
+	y_offset = -y_pos + look->last_y ; // перевернуто, так как диапазон y-координаты определяется снизу вверх
+	look->last_x = x_pos;
+	look->last_y = y_pos;
+	look->yaw   += x_offset * CAMERA_SENSITIVITY;
+	look->pitch   += y_offset * CAMERA_SENSITIVITY;
+	if(look->pitch > 89.0f)
+		look->pitch =  89.0f;
+	if(look->pitch < -89.0f)
+		look->pitch = -89.0f;
+	set_vec3(cos(look->yaw *PI/180) * cos(look->pitch *PI/180),
+			sin(look->pitch * PI/180),
+			sin(look->yaw *PI/180) * cos(look->pitch *PI/180), temp);
+	vec3_norm(temp);
+	vec3_copy(temp, look->camera->front);
+}
 
 void print_matrix(char *name, float *mat)
 {
@@ -175,10 +173,12 @@ void init_app(t_env *env)
 		exit(1);
 	}
 	glfwMakeContextCurrent(env->window);
+	env->camera.look = get_camera_look();
+	env->camera.look->camera = &env->camera;
 	// glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	// glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetCursorPosCallback(env->window, mouse_callback);
 	// glfwSetScrollCallback(window, scroll_callback);
-	// glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(env->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glEnable(GL_DEPTH_TEST);
 }
 
