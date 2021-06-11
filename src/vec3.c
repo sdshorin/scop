@@ -40,6 +40,13 @@ vec3_t  vec3_add(vec3_t a, vec3_t b, vec3_t dest)
     return (dest);
 }
 
+vec3_t vec3_copy(vec3_t source, vec3_t dest)
+{
+    dest[0] = source[0];
+    dest[1] = source[1];
+    dest[2] = source[2];
+    return (dest);
+}
 
 vec3_t  vec3_minus(vec3_t a, vec3_t b, vec3_t dest)
 {
@@ -61,6 +68,14 @@ vec3_t  vec3_norm(vec3_t vec)
     vec[0] /= sum;
     vec[1] /= sum;
     vec[2] /= sum;
+    return (vec);
+}
+
+vec3_t vec3_scale(vec3_t vec, float scale)
+{
+    vec[0] = vec[0] * scale;
+    vec[1] = vec[1] * scale;
+    vec[2] = vec[2] * scale;
     return (vec);
 }
 

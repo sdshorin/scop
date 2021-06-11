@@ -50,13 +50,23 @@ typedef struct s_obj {
 	float model[16];
 }  t_obj;
 
+typedef struct s_camera_look {
+	float last_x;
+	float last_y;
+	int is_inited;
+	float yaw; // по горизонтали
+	float pitch; // по вертикали
+
+} t_camera_look ;
+
+
 typedef struct s_camera {
 	float pos[3];
 	float front[3];
 	float up[3];
 	float proj[16];
 	float view[16];
-
+	t_camera_look *look;
 
 } t_camera;
 
@@ -87,6 +97,10 @@ vec3_t copy_vec3(float *src, float *dest);
 vec3_t set_vec3(float a, float b, float c, float *dest);
 vec3_t  vec3_minus(vec3_t a, vec3_t b, vec3_t dest);
 vec3_t  vec3_norm(vec3_t vec);
+vec3_t vec3_scale(vec3_t vec, float scale);
+vec3_t vec3_copy(vec3_t source, vec3_t dest);
+
+
 vec3_t  vec3_cross(vec3_t a, vec3_t b, vec3_t dest);
 vec3_t  vec3_add(vec3_t a, vec3_t b, vec3_t dest);
 vec3_t copy_vec3_with_offset(float *src, float *dest, int offset);

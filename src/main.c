@@ -40,6 +40,7 @@ void print_view_status(t_env *env)
 
 void processInput(GLFWwindow *window, t_env *env, float delta_time)
 {
+	float temp[3];
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, 1);
 	
@@ -63,76 +64,86 @@ void processInput(GLFWwindow *window, t_env *env, float delta_time)
 			env->camera.pos[0] += env->camera.front[0] * cameraSpeed;
 			env->camera.pos[1] += env->camera.front[1] * cameraSpeed;
 			env->camera.pos[2] += env->camera.front[2] * cameraSpeed;
-			// vec3_t temp_v =  vec3_create(camera_front);
-			// vec3_scale(temp_v, cameraSpeed, 0);
-			// vec3_add(camera_pos, temp_v, 0);
-			// free(temp_v);
 		}
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			// vec3_t temp_v =  vec3_create(camera_front);
-			// vec3_scale(temp_v, cameraSpeed, 0);
-			// vec3_subtract(camera_pos, temp_v, 0);
-			// free(temp_v);
 			env->camera.pos[0] -= env->camera.front[0] * cameraSpeed;
 			env->camera.pos[1] -= env->camera.front[1] * cameraSpeed;
 			env->camera.pos[2] -= env->camera.front[2] * cameraSpeed;
 		}
-    // if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	// 	{
-    //     	// camera_pos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	// 		vec3_t temp_v =  vec3_create(camera_front);
-	// 		vec3_cross(camera_front, camera_up, temp_v);
-	// 		vec3_normalize(temp_v, 0);
-	// 		vec3_scale(temp_v, cameraSpeed, 0);
-	// 		vec3_subtract(camera_pos, temp_v, 0);
-	// 		free(temp_v);
-	// 		printf("%s\n", "GLFW_KEY_A");
-	// 	}
-    // if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	// 	{
-    //     	// camera_pos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	// 		vec3_t temp_v =  vec3_create(camera_front);
-	// 		vec3_cross(camera_front, camera_up, temp_v);
-	// 		vec3_normalize(temp_v, 0);
-	// 		vec3_scale(temp_v, cameraSpeed, 0);
-	// 		vec3_add(camera_pos, temp_v, 0);
-	// 		free(temp_v);
-	// 		printf("%s\n", "GLFW_KEY_D");
-	// 	}
-	// if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-	// 	{
-    //     	// camera_pos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	// 		mat4_t temp_m = mat4_identity(0);
-	// 		mat4_rotate(temp_m, 0.01f, camera_up, 0);
-	// 		mat4_multiplyVec4(temp_m, camera_front, 0);
-	// 		free(temp_m);
-	// 		// vec3_t temp_v =  vec3_create(camera_front);
-	// 		// vec3_cross(camera_front, camera_up, temp_v);
-	// 		// vec3_normalize(temp_v, 0);
-	// 		// vec3_scale(temp_v, cameraSpeed, 0);
-	// 		// vec3_add(camera_pos, temp_v, 0);
-	// 		// free(temp_v);
-	// 		// printf("%s\n", "GLFW_KEY_D");
-	// 	}
-	// if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-	// 	{
-    //     	// camera_pos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	// 		mat4_t temp_m = mat4_identity(0);
-	// 		mat4_rotate(temp_m, -0.01f, camera_up, 0);
-	// 		mat4_multiplyVec4(temp_m, camera_front, 0);
-	// 		free(temp_m);
-	// 		// vec3_t temp_v =  vec3_create(camera_front);
-	// 		// vec3_cross(camera_front, camera_up, temp_v);
-	// 		// vec3_normalize(temp_v, 0);
-	// 		// vec3_scale(temp_v, cameraSpeed, 0);
-	// 		// vec3_add(camera_pos, temp_v, 0);
-	// 		// free(temp_v);
-	// 		// printf("%s\n", "GLFW_KEY_D");
-	// 	}
-
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		{
+			vec3_cross(env->camera.front, env->camera.up, temp);
+			vec3_norm(temp);
+			vec3_scale(temp, cameraSpeed);
+			vec3_minus(env->camera.pos, temp, env->camera.pos);
+		}
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+        	vec3_cross(env->camera.front, env->camera.up, temp);
+			vec3_norm(temp);
+			vec3_scale(temp, cameraSpeed);
+			vec3_add(env->camera.pos, temp, env->camera.pos);
+		}
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		{
+			vec3_copy(env->camera.up, temp);
+			vec3_scale(temp, cameraSpeed);
+			vec3_add(env->camera.pos, temp, env->camera.pos);
+		}
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		{
+			vec3_copy(env->camera.up, temp);
+			vec3_scale(temp, cameraSpeed);
+			vec3_minus(env->camera.pos, temp, env->camera.pos);
+		}
 }
 
+
+t_camera_look *get_camera_look()
+{
+	static t_camera_look data;
+
+	return (&data);
+}
+
+
+// void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+// {
+// 	if(firstMouse) // изначально установлено значение true
+// 	{
+// 		lastX = xpos;
+// 		lastY = ypos;
+// 		firstMouse =0 ;
+		
+// 	}
+
+// 	float xoffset = xpos - lastX;
+// 	float yoffset = lastY - ypos; // перевернуто, так как диапазон y-координаты определяется снизу вверх
+// 	lastX = xpos;
+// 	lastY = ypos;
+	
+// 	const float sensitivity = 0.05f;
+// 	xoffset *= sensitivity;
+// 	yoffset *= sensitivity;
+
+// 	yaw   += xoffset;
+// 	pitch += yoffset; 
+
+// 	if(pitch > 89.0f)
+// 		pitch =  89.0f;
+// 	if(pitch < -89.0f)
+// 		pitch = -89.0f;
+	
+// 	vec3_t direction =  vec3_create(0);
+// 	// glm::vec3 direction;
+	
+//     direction[0] = cos(yaw *PI/180) * cos(pitch *PI/180);
+//     direction[1] = sin(PI/180 * pitch);
+//     direction[2] = sin(yaw *PI/180) * cos(pitch *PI/180);
+//     vec3_normalize(direction, camera_front);
+// 	// glm::normalize(direction);
+// }
 
 void print_matrix(char *name, float *mat)
 {
@@ -243,9 +254,9 @@ void start_main_loop(t_env *env)
 		// printf(" 5ERROR!  %d\n", glGetError());
 		CHECK_ERROR()
 
-		// float camX = sin(glfwGetTime()) * 10.0f;
-		// float camZ = cos(glfwGetTime())  * 10.0f;
-		// set_vec3(camX, 2.0, camZ, env->camera.pos);
+		// float camX = sin(glfwGetTime()) * 4.0f;
+		// float camZ = cos(glfwGetTime())  * 4.0f;
+		// set_vec3(camX, 0.0, camZ, env->camera.pos);
 		// set_vec3(2.0, 2.0, 0.0, temp);
 		// set_vec3(0.0, 1.0, 0.0, up);
 		// mat4_create_camera_matrix(env->camera.pos, temp, up, env->camera.view);
