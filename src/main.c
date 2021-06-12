@@ -151,7 +151,7 @@ void print_matrix(char *name, float *mat)
 	{
 		for(columns=0; columns<4; columns++)
 		{
-			printf("%f     ", mat[row * 4 + columns]);
+			printf("%f     ", mat[row + columns * 4]);
 		}
 		printf("\n");
 	}

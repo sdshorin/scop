@@ -64,7 +64,6 @@ mat4_t  mat4_mult(mat4_t a, mat4_t b, mat4_t result)
 {
     int i;
     int j;
-    int k;
 
     i = 0;
     while (i < 4)
@@ -72,13 +71,10 @@ mat4_t  mat4_mult(mat4_t a, mat4_t b, mat4_t result)
         j = 0;
         while (j < 4)
         {
-            result[i * 4 + j] = 0;
-            k = 0;
-            while (k < 4)
-            {
-                result[i * 4 + j] += a[i * 4 + k] * b[k * 4 + j];
-                k++;
-            }
+            result[i * 4 + j] = a[j] * b[i * 4]
+                                + a[j + 4] * b[i * 4 + 1]
+                                + a[j + 8] * b[i * 4 + 2]
+                                + a[j + 12] *b[i * 4 + 3];
             j++;
         }
         i++;
