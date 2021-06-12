@@ -185,7 +185,7 @@ void init_app(t_env *env)
 void init_positions(t_env *env)
 {
 	float temp[3];
-	set_vec3(0.0f, 0.0f, 1.0f, env->camera.pos);
+	set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
 	// set_vec3(0.0f, 0.0f, 3.0f, env->camera.pos);
 	set_vec3(0.0f, 0.0f, -1.0f, env->camera.front);
 	vec3_add(env->camera.pos, env->camera.front, temp);
@@ -265,9 +265,9 @@ void start_main_loop(t_env *env)
 		// set_vec3(0.0, 1.0, 0.0, up);
 		// mat4_create_camera_matrix(env->camera.pos, temp, up, env->camera.view);
 
+		mat4_rotate_model_y(env->object->model, 1.0f);
 
-
-		// glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
+		glUniformMatrix4fv(glGetUniformLocation(env->shader, "model"), 1, GL_FALSE, env->object->model);
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
 		CHECK_ERROR()
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // отрисовка полигонами
@@ -355,7 +355,7 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
-	mat4_scale(env.object->model, 0.2);
+	mat4_scale(env.object->model, 1.0);
 	// check_error(0);
 	init_app(&env);
 	init_positions(&env);

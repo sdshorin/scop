@@ -26,12 +26,56 @@ mat4_t mat4_identity(float *dest) {
     dest[15] = 1;
     return dest;
 }
-float *mat4_scale(float *mat, float scale)
+mat4_t mat4_scale(mat4_t mat, float scale)
 {
     mat4_identity(mat);
     mat[0] *= scale;
     mat[5] *= scale;
     mat[10] *= scale;
+}
+
+mat4_t mat4_copy(mat4_t src, mat4_t dest)
+{
+    ft_memcpy(dest, src, sizeof(float) * 16);
+}
+
+
+mat4_t mat4_rotation_x(mat4_t mat, float rotate)
+{
+    mat4_identity(mat);
+    mat[5] = cosf((rotate / 180.0) * PI);
+    mat[6] = sinf((rotate / 180.0) * PI);
+    mat[9] = -sinf((rotate / 180.0) * PI);
+    mat[10] = cosf((rotate / 180.0) * PI);
+}
+
+mat4_t mat4_rotation_y(mat4_t mat, float rotate)
+{
+    mat4_identity(mat);
+    mat[0] = cosf((rotate / 180.0) * PI);
+    mat[8] = sinf((rotate / 180.0) * PI);
+    mat[2] = -sinf((rotate / 180.0) * PI);
+    mat[10] = cosf((rotate / 180.0) * PI);
+}
+
+mat4_t mat4_rotation_z(mat4_t mat, float rotate)
+{
+    mat4_identity(mat);
+    mat[0] = cosf((rotate / 180.0) * PI);
+    mat[1] = sinf((rotate / 180.0) * PI);
+    mat[4] = -sinf((rotate / 180.0) * PI);
+    mat[5] = cosf((rotate / 180.0) * PI);
+}
+
+mat4_t mat4_rotate_model_y(mat4_t model, float rotate)
+{
+    float temp1[16];
+    float temp2[16];
+
+    mat4_copy(model, temp2);
+    mat4_rotation_y(temp1, rotate);
+    mat4_mult(temp1, temp2, model);
+    return (model);
 }
 
 

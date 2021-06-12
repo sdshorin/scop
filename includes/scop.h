@@ -118,6 +118,7 @@ mat4_t mat4_create_camera_matrix(vec3_t pos, vec3_t target, vec3_t up, mat4_t re
 float *mat4_scale(float *mat, float scale);
 mat4_t  mat4_mult(mat4_t a, mat4_t b, mat4_t result);
 
+mat4_t mat4_rotate_model_y(mat4_t model, float rotate);
 
 
 
