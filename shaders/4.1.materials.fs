@@ -17,7 +17,7 @@ struct Light {
     vec3 specular;
 };
 
-in vec3 FragPos;  
+in vec3 vertex_color;  
 in vec3 Normal;  
   
 uniform vec3 viewPos;
@@ -44,10 +44,10 @@ void main()
         
     // vec3 result = ambient + diffuse + specular;
     //FragColor = vec4( 1.0);
-    FragColor.r = cos(time * 1.2);
-    FragColor.g = sin(time * 2.0 / 3.0);
-    FragColor.b = cos(time * 4.0 / 7.0);
-    FragColor.a = 1.0;
-    // FragColor = vec4(normalize(FragPos) * , 1.0);
+    // FragColor.r = cos(time * 1.2);
+    // FragColor.g = sin(time * 2.0 / 3.0);
+    // FragColor.b = cos(time * 4.0 / 7.0);
+    // FragColor.a = 1.0;
+    FragColor = vec4(vertex_color, 1.0);
 } 
 

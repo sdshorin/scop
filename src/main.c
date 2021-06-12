@@ -202,18 +202,22 @@ void load_obj_to_gpu(t_env *env)
 	glGenVertexArrays(1, &env->buffs.vao);
 	glGenBuffers(1, &env->buffs.vbo);
 	glGenBuffers(1, &env->buffs.ebo);
+	glGenBuffers(1, &env->buffs.cbo);
 
 	glBindVertexArray(env->buffs.vao);
-	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * env->object->triangels.size, env->object->triangels.data, GL_STATIC_DRAW);
-	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	// glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.cbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->colors.size, env->object->colors.data, GL_STATIC_DRAW);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+
 }
 
 
@@ -266,7 +270,8 @@ void start_main_loop(t_env *env)
 		// glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, offsset);
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
 		CHECK_ERROR()
-			
+			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // отрисовка полигонами
+			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // возврат к исходной отрисовке
 		glDrawElements(GL_TRIANGLES, env->object->triangels.size, GL_UNSIGNED_INT, 0);
 		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

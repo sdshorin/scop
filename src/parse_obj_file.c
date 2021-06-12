@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parse_obj_file.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sergey <sergey@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/14 19:02:59 by kpsylock          #+#    #+#             */
-/*   Updated: 2021/06/08 12:45:44 by sergey           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "scop.h"
 
@@ -58,6 +48,12 @@ void parse_verticles(t_obj *obj, char *str)
 			exit(1);
 		while (*str && (ft_isdigit(*str) || *str == '.' || *str == '-') && str++);
 	}
+	i = 0;
+	while (i++ < 3)
+	{
+		if (ft_float_vector_push_back(&obj->colors, ((float)rand() / 0x7fffffff) / 1.0 ))
+			exit(1);
+	}
 }
 
 void parse_triangle(t_obj *obj, char *str)
@@ -84,6 +80,8 @@ t_obj *create_obj_struct()
 	if (!obj)
 		exit(0);
 	if (ft_float_vector_init(&obj->verticles))
+		exit(0);
+	if (ft_float_vector_init(&obj->colors))
 		exit(0);
 	if (ft_uint_vector_init(&obj->triangels))
 		exit(0);

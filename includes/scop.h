@@ -50,6 +50,7 @@ struct s_camera;
 typedef struct s_obj {
 	t_uint_vector triangels;
 	t_float_vector verticles;
+	t_float_vector colors;
 	float model[16];
 }  t_obj;
 
@@ -78,6 +79,7 @@ typedef struct s_buffers {
 	unsigned int vao;
 	unsigned int vbo;
 	unsigned int ebo;
+	unsigned int cbo;
 
 } t_buffers;
 
