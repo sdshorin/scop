@@ -194,7 +194,7 @@ void init_positions(t_env *env)
 	mat4_create_camera_matrix(env->camera.pos, temp, env->camera.up, env->camera.view);
 	print_matrix("view", env->camera.view);
 	print_matrix("proj", env->camera.proj);
-	// exit(0);
+	mat4_offset(vec3_neg(vec3_get_average(env->object->verticles.data, env->object->verticles.size / 3, temp)), env->object->model);
 }
 
 void load_obj_to_gpu(t_env *env)
@@ -219,6 +219,9 @@ void load_obj_to_gpu(t_env *env)
 	glEnableVertexAttribArray(1);
 
 }
+
+
+
 
 
 void start_main_loop(t_env *env)
@@ -355,7 +358,8 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
-	mat4_scale(env.object->model, 1.0);
+	
+
 	// check_error(0);
 	init_app(&env);
 	init_positions(&env);
@@ -367,3 +371,4 @@ int		main(int argc, char **argv)
 	start_main_loop(&env);
 	free_memory(&env);
 }
+

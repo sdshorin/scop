@@ -105,6 +105,7 @@ vec3_t  vec3_minus(vec3_t a, vec3_t b, vec3_t dest);
 vec3_t  vec3_norm(vec3_t vec);
 vec3_t vec3_scale(vec3_t vec, float scale);
 vec3_t vec3_copy(vec3_t source, vec3_t dest);
+vec3_t vec3_neg(vec3_t vec);
 
 
 vec3_t  vec3_cross(vec3_t a, vec3_t b, vec3_t dest);
@@ -120,10 +121,12 @@ mat4_t  mat4_mult(mat4_t a, mat4_t b, mat4_t result);
 
 mat4_t mat4_rotate_model_y(mat4_t model, float rotate);
 
+mat4_t mat4_offset(vec3_t offset, mat4_t dest);
 
 
 vec3_t vec3(float a, float b, float c);
 
+vec3_t  vec3_get_average(vec3_t vertices, size_t size, vec3_t result);
 
 
 

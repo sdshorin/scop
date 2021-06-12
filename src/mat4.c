@@ -32,11 +32,22 @@ mat4_t mat4_scale(mat4_t mat, float scale)
     mat[0] *= scale;
     mat[5] *= scale;
     mat[10] *= scale;
+    return (mat);
+}
+
+mat4_t mat4_offset(vec3_t offset, mat4_t dest)
+{
+    mat4_identity(dest);
+    dest[12] = offset[0];
+    dest[13] = offset[1];
+    dest[14] = offset[2];
+    return (dest);
 }
 
 mat4_t mat4_copy(mat4_t src, mat4_t dest)
 {
     ft_memcpy(dest, src, sizeof(float) * 16);
+    return (dest);
 }
 
 
@@ -47,6 +58,7 @@ mat4_t mat4_rotation_x(mat4_t mat, float rotate)
     mat[6] = sinf((rotate / 180.0) * PI);
     mat[9] = -sinf((rotate / 180.0) * PI);
     mat[10] = cosf((rotate / 180.0) * PI);
+    return (mat);
 }
 
 mat4_t mat4_rotation_y(mat4_t mat, float rotate)
@@ -56,6 +68,7 @@ mat4_t mat4_rotation_y(mat4_t mat, float rotate)
     mat[8] = sinf((rotate / 180.0) * PI);
     mat[2] = -sinf((rotate / 180.0) * PI);
     mat[10] = cosf((rotate / 180.0) * PI);
+    return (mat);
 }
 
 mat4_t mat4_rotation_z(mat4_t mat, float rotate)
@@ -65,6 +78,7 @@ mat4_t mat4_rotation_z(mat4_t mat, float rotate)
     mat[1] = sinf((rotate / 180.0) * PI);
     mat[4] = -sinf((rotate / 180.0) * PI);
     mat[5] = cosf((rotate / 180.0) * PI);
+    return (mat);
 }
 
 mat4_t mat4_rotate_model_y(mat4_t model, float rotate)

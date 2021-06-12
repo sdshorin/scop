@@ -48,6 +48,14 @@ vec3_t vec3_copy(vec3_t source, vec3_t dest)
     return (dest);
 }
 
+vec3_t vec3_neg(vec3_t vec)
+{
+    vec[0] = -vec[0];
+    vec[1] = -vec[1];
+    vec[2] = -vec[2];
+    return (vec);
+}
+
 vec3_t  vec3_minus(vec3_t a, vec3_t b, vec3_t dest)
 {
     dest[0] = a[0] - b[0];
@@ -86,3 +94,24 @@ vec3_t  vec3_cross(vec3_t a, vec3_t b, vec3_t dest)
     dest[2] = a[0] * b[1] - a[1] * b[0];
     return (dest);
 }
+
+vec3_t  vec3_get_average(vec3_t vertices, size_t size, vec3_t result)
+{
+    size_t i;
+
+    i = 0;
+    result[0] = 0.0f;
+    result[1] = 0.0f;
+    result[2] = 0.0f;
+    while (i < size)
+    {
+        result[0] += vertices[i * 3];
+        result[1] += vertices[i * 3 + 1];
+        result[2] += vertices[i * 3 + 2];
+        i++;
+    }
+    result[0] /= size;
+    result[1] /= size;
+    result[2] /= size;
+    return (result);
+}   
