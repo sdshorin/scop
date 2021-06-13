@@ -1,6 +1,6 @@
 #version 410 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 color;
+layout (location = 1) in float color;
 out vec3 vertex_color;
 // out vec3 Normal;
 
@@ -18,6 +18,6 @@ void main()
     // gl_Position = vec4(FragPos, 1.0) * projection * view * model ;
     // gl_Position = vec4(aPos, 1.0) * model * view * projection;
   // gl_Position = projection * view * vec4(aPos, 1.0);
-   vertex_color = color;
+   vertex_color = vec3(color);
 }
 

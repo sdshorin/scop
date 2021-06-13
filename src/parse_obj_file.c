@@ -119,14 +119,23 @@ void create_obj_array(t_obj *obj)
 	while (i < obj->triangels.size)
 	{
 		copy_point(&(obj->verticles), &(obj->obj_array), obj->triangels.data[i]);
-		copy_element(&obj->colors, &obj->obj_array, i / 3);
-		copy_element(&obj->colors, &obj->obj_array, i / 3);
-		copy_element(&obj->colors, &obj->obj_array, i / 3);
-
-
 		i++;
 	}
 	
+}
+
+void add_color(t_float_vector *colors)
+{
+	float color;
+	int i;
+
+	i = 0;
+	color = ((float)(rand()) / 0x7fffffff) / 1.0;
+	while (i++ < 3)
+	{
+		if (ft_float_vector_push_back(colors, color))
+				exit(1);
+	}
 }
 
 t_obj			*create_object_from_file(int fd)
@@ -146,16 +155,14 @@ t_obj			*create_object_from_file(int fd)
 		else if (str[0] == 'f')
 		{
 			parse_triangle(obj, str);
-			if (ft_float_vector_push_back(&obj->colors, ((float)(rand()) / 0x7fffffff) / 1.0 ))
-				exit(1);
+			add_color(&obj->colors);
 		}
 		// parse normals, textures, materials, ...
 
 		free(str);
 	}
 	create_obj_array(obj);
-	// print_obj_array(obj->obj_array.data, obj->obj_array.size, 6);
-	// exit(0);
+
 
 	return (obj);
 }
