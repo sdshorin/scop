@@ -48,12 +48,7 @@ void parse_verticles(t_obj *obj, char *str)
 			exit(1);
 		while (*str && (ft_isdigit(*str) || *str == '.' || *str == '-') && str++);
 	}
-	i = 0;
-	while (i++ < 3)
-	{
-		if (ft_float_vector_push_back(&obj->colors, ((float)rand() / 0x7fffffff) / 1.0 ))
-			exit(1);
-	}
+	// printf("color %f\n", obj->colors.data[obj->colors.size - 1]);
 }
 
 void parse_triangle(t_obj *obj, char *str)
@@ -83,11 +78,56 @@ t_obj *create_obj_struct()
 		exit(0);
 	if (ft_float_vector_init(&obj->colors))
 		exit(0);
+	if (ft_float_vector_init(&obj->obj_array))
+		exit(0);
 	if (ft_uint_vector_init(&obj->triangels))
 		exit(0);
 	return (obj);
 }
 
+void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index)
+{
+	int i;
+	int j;
+	float temp;
+
+	i = 0;
+	while (i < 3)
+	{
+		temp = source->data[index * 3 + i];
+		if (ft_float_vector_push_back(des, temp))
+			exit_error("Error: can't add elem to float vector");
+		i++;
+	}
+}
+
+void copy_element(t_float_vector *source, t_float_vector *des, unsigned int index)
+{
+	float temp;
+
+	temp = source->data[index];
+	if (ft_float_vector_push_back(des, temp))
+			exit_error("Error: can't add elem to float vector");
+}
+
+void create_obj_array(t_obj *obj)
+{
+	size_t i;
+	float temp;
+
+	i = 0;
+	while (i < obj->triangels.size)
+	{
+		copy_point(&(obj->verticles), &(obj->obj_array), obj->triangels.data[i]);
+		copy_element(&obj->colors, &obj->obj_array, i / 3);
+		copy_element(&obj->colors, &obj->obj_array, i / 3);
+		copy_element(&obj->colors, &obj->obj_array, i / 3);
+
+
+		i++;
+	}
+	
+}
 
 t_obj			*create_object_from_file(int fd)
 {
@@ -104,10 +144,18 @@ t_obj			*create_object_from_file(int fd)
 		else if (str[0] == 'v')
 			parse_verticles(obj, str);
 		else if (str[0] == 'f')
+		{
 			parse_triangle(obj, str);
+			if (ft_float_vector_push_back(&obj->colors, ((float)(rand()) / 0x7fffffff) / 1.0 ))
+				exit(1);
+		}
 		// parse normals, textures, materials, ...
 
 		free(str);
 	}
+	create_obj_array(obj);
+	// print_obj_array(obj->obj_array.data, obj->obj_array.size, 6);
+	// exit(0);
+
 	return (obj);
 }

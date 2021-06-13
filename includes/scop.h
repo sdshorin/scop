@@ -31,6 +31,7 @@
 int current_path(int i);
 void check_error(int i);
 void print_matrix(char *name, float *mat);
+void print_obj_array(float *data, size_t size, size_t on_line);
 
 
 
@@ -50,6 +51,12 @@ struct s_camera;
 typedef struct s_obj {
 	t_uint_vector triangels;
 	t_float_vector verticles;
+	t_float_vector v_textures;
+	t_float_vector v_normal;
+	// t_float_vector v_normal;
+
+	t_float_vector obj_array;
+
 	t_float_vector colors;
 	float model[16];
 }  t_obj;
@@ -94,6 +101,7 @@ typedef struct s_env {
 
 t_obj			*create_object_from_file(int fd);
 
+void exit_error(char *error);
 
 
 unsigned int create_shader(char *path_vertex, char* path_fragment);

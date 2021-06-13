@@ -21,6 +21,12 @@ unsigned int indices[] = {
     };
 
 
+void exit_error(char *error)
+{
+	ft_putendl(error);
+	exit(1);
+}
+
 
 
 
@@ -58,7 +64,9 @@ void processInput(GLFWwindow *window, t_env *env, float delta_time)
 	// }
 
 
-    const float cameraSpeed = 5.0f * delta_time; // настройте по вашему усмотрению
+    float cameraSpeed = 2.0f * delta_time; // настройте по вашему усмотрению
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		cameraSpeed *= 3.0;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			env->camera.pos[0] += env->camera.front[0] * cameraSpeed;
@@ -157,6 +165,18 @@ void print_matrix(char *name, float *mat)
 	}
 }
 
+void print_obj_array(float *data, size_t size, size_t on_line)
+{
+
+	for (int i=0; i<size; i++)
+	{
+		
+		printf("%.4f ", data[i]);
+		if ((i + 1) % on_line == 0)
+			printf("\n");
+	}
+}
+
 void init_app(t_env *env)
 {
 
@@ -205,17 +225,22 @@ void load_obj_to_gpu(t_env *env)
 	glGenBuffers(1, &env->buffs.cbo);
 
 	glBindVertexArray(env->buffs.vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * env->object->triangels.size, env->object->triangels.data, GL_STATIC_DRAW);
+	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
+	// glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * env->object->triangels.size, env->object->triangels.data, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
+	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->obj_array.size, env->object->obj_array.data, GL_STATIC_DRAW); // new
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // new
 	glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.cbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->colors.size, env->object->colors.data, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// glBindBuffer(GL_ARRAY_BUFFER, env->buffs.cbo);
+	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->colors.size, env->object->colors.data, GL_STATIC_DRAW);
+	//  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//  glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0); ?????
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // new
 	glEnableVertexAttribArray(1);
 
 }
@@ -275,8 +300,8 @@ void start_main_loop(t_env *env)
 		CHECK_ERROR()
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // отрисовка полигонами
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // возврат к исходной отрисовке
-		glDrawElements(GL_TRIANGLES, env->object->triangels.size, GL_UNSIGNED_INT, 0);
-		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		// glDrawElements(GL_TRIANGLES, env->object->triangels.size, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, env->object->obj_array.size / 6); 
 
 		glfwSwapBuffers(env->window);
 		CHECK_ERROR()
