@@ -64,7 +64,7 @@ void processInput(GLFWwindow *window, t_env *env, float delta_time)
 	// }
 
 
-    float cameraSpeed = 2.0f * delta_time; // настройте по вашему усмотрению
+    float cameraSpeed = 20.0f * delta_time; // настройте по вашему усмотрению
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		cameraSpeed *= 3.0;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -222,8 +222,9 @@ void load_obj_to_gpu(t_env *env)
 	glGenVertexArrays(1, &env->buffs.vao);
 	glGenBuffers(1, &env->buffs.vbo);
 	glGenBuffers(1, &env->buffs.cbo);
-					glGenBuffers(1, &env->buffs.uvbo);
-					glGenBuffers(1, &env->buffs.nbo);
+	glGenBuffers(1, &env->buffs.uvbo);
+	if (env->with_light)
+		glGenBuffers(1, &env->buffs.nbo);
 
 	glBindVertexArray(env->buffs.vao);
 	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
@@ -244,16 +245,18 @@ void load_obj_to_gpu(t_env *env)
 	// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // new
 	glEnableVertexAttribArray(1);
 
-				glBindBuffer(GL_ARRAY_BUFFER, env->buffs.uvbo);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->uv_buffer.size, env->object->uv_buffer.data, GL_STATIC_DRAW);
-				glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-				glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.uvbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->uv_buffer.size, env->object->uv_buffer.data, GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(2);
 
-				glBindBuffer(GL_ARRAY_BUFFER, env->buffs.nbo);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->normals_buffer.size, env->object->normals_buffer.data, GL_STATIC_DRAW);
-				glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-				glEnableVertexAttribArray(3);
-
+	if (env->with_light)
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, env->buffs.nbo);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->normals_buffer.size, env->object->normals_buffer.data, GL_STATIC_DRAW);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(3);
+	}
 
 }
 
@@ -271,26 +274,25 @@ void start_main_loop(t_env *env)
 	
 	glUseProgram(env->shader);
 
+	if (env->with_light)
+	{
+		temp[0] = -30.2f;
+		temp[1] = -1.5f;
+		temp[2] = 1.5f;
 
+		// glUniform3f(glGetUniformLocation(env->shader, "obj_color"), 1.0f, 0.5f, 0.31f);
+		// glUniform3f(glGetUniformLocation(env->shader, "light_color"), 1.0f, 1.0f, 1.0f);
+		glUniform3f(glGetUniformLocation(env->shader, "light.position"), temp[0], temp[1], temp[2]);
+		glUniform3f(glGetUniformLocation(env->shader, "viewPos"), env->camera.pos[0], env->camera.pos[1], env->camera.pos[2]);
+		glUniform3f(glGetUniformLocation(env->shader, "light.ambient"), 0.2f, 0.1f, 0.31f);
+		glUniform3f(glGetUniformLocation(env->shader, "light.diffuse"), 1.0f, 0.9f, 0.91f);
+		glUniform3f(glGetUniformLocation(env->shader, "light.specular"), 0.5f, 0.5f, 0.5f);
 
-					temp[0] = -30.2f;
-					temp[1] = -1.5f;
-					temp[2] = 1.5f;
-
-					// glUniform3f(glGetUniformLocation(env->shader, "obj_color"), 1.0f, 0.5f, 0.31f);
-					// glUniform3f(glGetUniformLocation(env->shader, "light_color"), 1.0f, 1.0f, 1.0f);
-					glUniform3f(glGetUniformLocation(env->shader, "light.position"), temp[0], temp[1], temp[2]);
-					glUniform3f(glGetUniformLocation(env->shader, "viewPos"), env->camera.pos[0], env->camera.pos[1], env->camera.pos[2]);
-					glUniform3f(glGetUniformLocation(env->shader, "light.ambient"), 0.2f, 0.1f, 0.31f);
-					glUniform3f(glGetUniformLocation(env->shader, "light.diffuse"), 1.0f, 0.5f, 0.31f);
-					glUniform3f(glGetUniformLocation(env->shader, "light.specular"), 0.5f, 0.5f, 0.5f);
-
-					glUniform3f(glGetUniformLocation(env->shader, "material.ambient"), 0.2f, 0.1f, 0.31f);
-					glUniform3f(glGetUniformLocation(env->shader, "material.diffuse"), 1.0f, 0.5f, 0.31f);
-					glUniform3f(glGetUniformLocation(env->shader, "material.specular"), 0.5f, 0.5f, 0.5f);
-					glUniform1f(glGetUniformLocation(env->shader, "material.shininess"), 32.0f);
-
-
+		glUniform3f(glGetUniformLocation(env->shader, "material.ambient"), 0.2f, 0.1f, 0.31f);
+		glUniform3f(glGetUniformLocation(env->shader, "material.diffuse"), 1.0f, 0.9f, 0.31f);
+		glUniform3f(glGetUniformLocation(env->shader, "material.specular"), 0.5f, 0.5f, 0.5f);
+		glUniform1f(glGetUniformLocation(env->shader, "material.shininess"), 32.0f);
+	}
 
 	glUniformMatrix4fv(glGetUniformLocation(env->shader, "projection"), 1, GL_FALSE, env->camera.proj);
 	print_matrix("proj------", env->camera.proj);
@@ -418,13 +420,15 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
-	
-
+	env.with_light = !!env.object->normals_buffer.size;
 	// check_error(0);
 	init_app(&env);
 	init_positions(&env);
 	check_error(1);
-	env.shader = create_shader(VERTEX_SHADER, FRAGMENT_SHADER);
+	if (env.with_light)
+		env.shader = create_shader(VERTEX_SHADER, FRAGMENT_SHADER);
+	else
+		env.shader = create_shader(VERTEX_SHADER_NO_LIGHT, FRAGMENT_SHADER_NO_LIGHT);
 	
 	load_obj_to_gpu(&env);
 	check_error(2);

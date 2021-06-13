@@ -141,8 +141,8 @@ void add_triangle(t_obj *obj, t_temp_figure_point *p)
 		copy_point(&obj->verticles, &obj->vert_buffer, p[i].p_num, 3);
 		if (obj->uv.size)
 			copy_point(&obj->uv, &obj->uv_buffer, p[i].uv_num, 2);
-		//else
-		///	add_dummy_point(&obj->uv_buffer, 2);
+		else
+			add_dummy_point(&obj->uv_buffer, 2); // добавлять точку чтобы было видно треугольник!
 		if (obj->normals.size)
 			copy_point(&obj->normals, &obj->normals_buffer, p[i].vn_num, 3);
 		//else

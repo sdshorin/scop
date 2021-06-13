@@ -39,8 +39,11 @@ void print_obj_array(float *data, size_t size, size_t on_line);
 
 
 
-#define VERTEX_SHADER "shaders/4.1.materials.vs"
-#define FRAGMENT_SHADER "shaders/4.1.materials.fs"
+#define VERTEX_SHADER "shaders/4.1.scop.vs"
+#define FRAGMENT_SHADER "shaders/4.1.scop.fs"
+
+#define VERTEX_SHADER_NO_LIGHT "shaders/4.1.scop_base.vs"
+#define FRAGMENT_SHADER_NO_LIGHT "shaders/4.1.scop_base.fs"
 
 #define numeric_t float
 
@@ -96,6 +99,7 @@ typedef struct s_env {
 	t_camera camera;
 	t_buffers buffs;
 	GLFWwindow *window;
+	int with_light;
 }  t_env;
 
 
