@@ -95,18 +95,18 @@ void copy_figure_point(t_temp_figure_point *dest, t_temp_figure_point *source)
 }
 
 
-void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index)
+void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index, unsigned int len)
 {
 	int i;
 	int j;
 	float temp;
 
 	i = 0;
-	if (source->size <= index * 3 + 2)
+	if (source->size <= index * len + len - 1)
 		exit_error("Error: problem in model");
-	while (i < 3)
+	while (i < len)
 	{
-		temp = source->data[index * 3 + i];
+		temp = source->data[index * len + i];
 		if (ft_float_vector_push_back(des, temp))
 			exit_error("Error: can't add elem to float vector");
 		i++;
@@ -125,11 +125,11 @@ void add_triangle(t_obj *obj, t_temp_figure_point *p)
 	triangle_color = ((float)(rand()) / 0x7fffffff) / 1.0;
 	while (i < 3)
 	{
-		copy_point(&obj->verticles, &obj->vert_buffer, p[i].p_num);
+		copy_point(&obj->verticles, &obj->vert_buffer, p[i].p_num, 3);
 		if (obj->uv.size)
-			copy_point(&obj->uv, &obj->uv_buffer, p[i].uv_num);
+			copy_point(&obj->uv, &obj->uv_buffer, p[i].uv_num, 2);
 		if (obj->normals.size)
-			copy_point(&obj->normals, &obj->normals_buffer, p[i].vn_num);
+			copy_point(&obj->normals, &obj->normals_buffer, p[i].vn_num, 3);
 		if (ft_float_vector_push_back(&obj->colors_buffer, triangle_color))
 			exit_error("Error: can't add elem to colors_buffer");
 		i ++;
