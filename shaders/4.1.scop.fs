@@ -42,7 +42,7 @@ void main()
     
     // // Отраженная составляющая
     vec3 view_diw = normalize(viewPos - frag_pos);
-    vec3 reflect_dir = reflect(-light_dir, norm);  
+    vec3 reflect_dir = reflect(light_dir, norm);  
     float spec = pow(max(dot(view_diw, reflect_dir), 0.0), material.shininess);
     vec3 specular = light.specular * (spec * material.specular);  
         
