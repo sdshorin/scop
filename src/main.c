@@ -231,12 +231,12 @@ void load_obj_to_gpu(t_env *env)
 	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
 	// glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->verticles.size, env->object->verticles.data, GL_STATIC_DRAW);
 	// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->obj_array.size, env->object->obj_array.data, GL_STATIC_DRAW); // new
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->vert_buffer.size, env->object->vert_buffer.data, GL_STATIC_DRAW); // new
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // new
 	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.cbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->colors.size, env->object->colors.data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * env->object->colors_buffer.size, env->object->colors_buffer.data, GL_STATIC_DRAW);
 	//  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	 glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0); //?????
 
@@ -301,7 +301,7 @@ void start_main_loop(t_env *env)
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // отрисовка полигонами
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // возврат к исходной отрисовке
 		// glDrawElements(GL_TRIANGLES, env->object->triangels.size, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 0, env->object->obj_array.size / 3); 
+		glDrawArrays(GL_TRIANGLES, 0, env->object->vert_buffer.size / 3); 
 
 		glfwSwapBuffers(env->window);
 		CHECK_ERROR()

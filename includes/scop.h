@@ -49,15 +49,14 @@ typedef numeric_t *mat4_t;
 
 struct s_camera;
 typedef struct s_obj {
-	t_uint_vector triangels;
-	t_float_vector verticles;
-	t_float_vector v_textures;
-	t_float_vector v_normal;
-	// t_float_vector v_normal;
+	t_float_vector verticles; // v
+	t_float_vector uv; // vt
+	t_float_vector normals; // vn
+	t_float_vector vert_buffer; // v
+	t_float_vector uv_buffer; // v
+	t_float_vector normals_buffer; // v
+	t_float_vector colors_buffer;
 
-	t_float_vector obj_array;
-
-	t_float_vector colors;
 	float model[16];
 }  t_obj;
 
