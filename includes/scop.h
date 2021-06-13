@@ -82,10 +82,11 @@ typedef struct s_camera {
 } t_camera;
 
 typedef struct s_buffers {
-	unsigned int vao;
-	unsigned int vbo;
-	unsigned int ebo;
-	unsigned int cbo;
+	unsigned int vao; //  VertexArray
+	unsigned int vbo;  // vert_buffer
+	unsigned int cbo;  // colors_buffer
+	unsigned int uvbo;  // uv_buffer
+	unsigned int nbo;  // normals_buffer
 
 } t_buffers;
 

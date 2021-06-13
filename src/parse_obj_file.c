@@ -113,7 +113,20 @@ void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index,
 	}
 }
 
+void add_dummy_point(t_float_vector *des, int size)
+{
+	int i;
 
+	i = 0;
+	while (i < size)
+	{
+		if (!i)
+			ft_float_vector_push_back(des, 1.0);
+		else
+			ft_float_vector_push_back(des, 0.0);
+		i++;
+	}
+}
 
 
 void add_triangle(t_obj *obj, t_temp_figure_point *p)
@@ -128,8 +141,12 @@ void add_triangle(t_obj *obj, t_temp_figure_point *p)
 		copy_point(&obj->verticles, &obj->vert_buffer, p[i].p_num, 3);
 		if (obj->uv.size)
 			copy_point(&obj->uv, &obj->uv_buffer, p[i].uv_num, 2);
+		//else
+		///	add_dummy_point(&obj->uv_buffer, 2);
 		if (obj->normals.size)
 			copy_point(&obj->normals, &obj->normals_buffer, p[i].vn_num, 3);
+		//else
+		//	add_dummy_point(&obj->normals_buffer, 3);
 		if (ft_float_vector_push_back(&obj->colors_buffer, triangle_color))
 			exit_error("Error: can't add elem to colors_buffer");
 		i ++;
@@ -248,12 +265,9 @@ t_obj			*create_object_from_file(int fd)
 			parse_vector_f(&obj->normals, str + 2, 3);
 		else if (str[0] == 'f')
 			parse_figure(obj, str + 1);
-		// parse normals, textures, materials, ...
-
 		free(str);
 	}
-	// create_obj_array(obj);
-
+	
 
 	return (obj);
 }

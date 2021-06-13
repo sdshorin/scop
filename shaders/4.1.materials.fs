@@ -18,36 +18,41 @@ struct Light {
 };
 
 in vec3 vertex_color;  
-in vec3 Normal;  
-  
+in vec3 normal;  
+in vec3 frag_pos;  
+in vec3 uv;  
+
+
 uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
 uniform float time;
+// uniform sampler2D texture1;
 
 void main()
 {
     // Окружающая составляющая
-    // vec3 ambient = light.ambient * material.ambient;
+    vec3 ambient = light.ambient * material.ambient;
   	
     // // Диффузная составляющая 
-    // vec3 norm = normalize(Normal);
-    // vec3 lightDir = normalize(light.position - FragPos);
-    // float diff = max(dot(norm, lightDir), 0.0);
-    // vec3 diffuse = light.diffuse * (diff * material.diffuse);
+    vec3 norm = normalize(normal);
+    vec3 light_dir = normalize(light.position - frag_pos);
+    float diff = max(dot(norm, light_dir), 0.0);
+    vec3 diffuse = light.diffuse * (diff * material.diffuse);
     
     // // Отраженная составляющая
-    // vec3 viewDir = normalize(viewPos - FragPos);
-    // vec3 reflectDir = reflect(-lightDir, norm);  
-    // float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    // vec3 specular = light.specular * (spec * material.specular);  
+    vec3 view_diw = normalize(viewPos - frag_pos);
+    vec3 reflect_dir = reflect(-light_dir, norm);  
+    float spec = pow(max(dot(view_diw, reflect_dir), 0.0), material.shininess);
+    vec3 specular = light.specular * (spec * material.specular);  
         
-    // vec3 result = ambient + diffuse + specular;
-    //FragColor = vec4( 1.0);
-    // FragColor.r = cos(time * 1.2);
-    // FragColor.g = sin(time * 2.0 / 3.0);
-    // FragColor.b = cos(time * 4.0 / 7.0);
-    // FragColor.a = 1.0;
-    FragColor = vec4(vertex_color, 1.0);
+    vec3 result = ambient + diffuse + specular;
+    
+    // vec2 face_coord = vec2(1-uv.x, uv.y);
+	// FragColor = mix(texture(texture1, texCoord), texture(texture2, face_coord), mix_scale);
+
+
+    FragColor = vec4(result, 1.0);
+    // FragColor = vec4(vertex_color, 1.0);
 } 
 
