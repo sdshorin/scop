@@ -28,9 +28,6 @@ void exit_error(char *error)
 }
 
 
-
-
-
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	// printf("%s\n", "frame changed");
@@ -49,20 +46,6 @@ void processInput(GLFWwindow *window, t_env *env, float delta_time)
 	float temp[3];
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, 1);
-	
-	// if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	// {
-	// 	mix_scale += 0.05f;
-	// 	if (mix_scale > 1.0)
-	// 		mix_scale = 1.0f;
-	// }
-	// if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	// {
-	// 	mix_scale -= 0.05f;
-	// 	if (mix_scale < 0.0f)
-	// 		mix_scale = 0.0f;
-	// }
-
 
     float cameraSpeed = 20.0f * delta_time; // настройте по вашему усмотрению
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
@@ -107,13 +90,13 @@ void processInput(GLFWwindow *window, t_env *env, float delta_time)
 		}
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
-		env->object->mix_scale += 0.005f;
+		env->object->mix_scale += 0.05f;
 		if (env->object->mix_scale > 1.0)
 			env->object->mix_scale = 1.0f;
 	}
 	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 	{
-		env->object->mix_scale -= 0.005f;
+		env->object->mix_scale -= 0.05f;
 		if (env->object->mix_scale < 0.0)
 			env->object->mix_scale = 0.0f;
 	}
@@ -415,9 +398,30 @@ int		open_file(char *path, int error_exit)
 
 void free_memory(t_env *env)
 {
-	glfwTerminate();
+	glDeleteVertexArrays(1, &env->buffs.vao);
+	glDeleteBuffers(1, &env->buffs.vbo);
+	glDeleteBuffers(1, &env->buffs.cbo);
+	glDeleteBuffers(1, &env->buffs.uvbo);
+	if (env->with_light)
+		glDeleteBuffers(1, &env->buffs.nbo);
+	if (env->texture.data)
+	{
+		glGenTextures(1, &env->buffs.texture);  
+		free(env->texture.data);
+	}
 	glDeleteProgram(env->shader);
-	// Delete all!
+	glfwDestroyWindow(env->window);
+	glfwTerminate();
+	
+	ft_float_vector_free(&env->object->verticles);
+	ft_float_vector_free(&env->object->uv);
+	ft_float_vector_free(&env->object->normals);
+	ft_float_vector_free(&env->object->vert_buffer);
+	ft_float_vector_free(&env->object->uv_buffer);
+	ft_float_vector_free(&env->object->normals_buffer);
+	ft_float_vector_free(&env->object->colors_buffer);
+	free(env->object);
+
 }
 
 
@@ -445,15 +449,9 @@ int		main(int argc, char **argv)
 	int		fd;
 
 	if (argc == 2)
-	{
-		fd = open_file(argv[1], 1);
-		env.object = create_object_from_file(fd);
-	}
+		env.object = create_object_from_file(open_file(argv[1], 1));
 	else
-	{
-		ft_putendl("USAGE: ./command file");
-		exit(0);
-	}
+		exit_error("USAGE: ./command file");
 	fd = open_file(TEXTURE_PATH, 0);
 	if (fd < 0 || !parse_bmp_file(fd, &env.texture))
 		env.texture.data = 0;

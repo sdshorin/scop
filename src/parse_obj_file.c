@@ -271,6 +271,7 @@ t_obj			*create_object_from_file(int fd)
 		free(str);
 	}
 	obj->mix_scale = 0.0f;
+	close(fd);
 
 	return (obj);
 }
