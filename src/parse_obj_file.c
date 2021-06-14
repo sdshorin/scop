@@ -1,27 +1,26 @@
-
-
 #include "scop.h"
 
-
-void parse_vector_f(t_float_vector *vec, char *str, size_t vec_size)
+void	parse_vector_f(t_float_vector *vec, char *str, size_t vec_size)
 {
-	int i;
+	size_t	i;
 
 	i = 0;
 	while (i++ < vec_size)
 	{
-		while (*str && *str == ' ' && str++);
+		while (*str && *str == ' ' && str++)
+			;
 		if (ft_float_vector_push_back(vec, (ft_float_atoi(str))))
 			exit(1);
-		while (*str && (ft_isdigit(*str) || *str == '.' || *str == '-') && str++);
+		while (*str && (ft_isdigit(*str) || *str == '.' || *str == '-') \
+					&& str++)
+			;
 	}
 }
 
-
-char *parse_figure_point(t_temp_figure_point *point, char*str)
+char	*parse_figure_point(t_temp_figure_point *point, char*str)
 {
-	int i;
-	unsigned int num;
+	int				i;
+	unsigned int	num;
 
 	i = 0;
 	point->p_num = 0;
@@ -30,7 +29,8 @@ char *parse_figure_point(t_temp_figure_point *point, char*str)
 	while ((ft_isdigit(*str) || *str == '/') && i < 3)
 	{
 		num = ft_atoi(str) - 1;
-		while (ft_isdigit(*str) && str++);
+		while (ft_isdigit(*str) && str++)
+			;
 		if (i == 0)
 			point->p_num = num;
 		else if (i == 1)
@@ -44,18 +44,19 @@ char *parse_figure_point(t_temp_figure_point *point, char*str)
 	return (str);
 }
 
-void copy_figure_point(t_temp_figure_point *dest, t_temp_figure_point *source)
+void	copy_figure_point(t_temp_figure_point *dest,
+							t_temp_figure_point *source)
 {
 	dest->p_num = source->p_num;
 	dest->uv_num = source->uv_num;
 	dest->vn_num = source->vn_num;
 }
 
-
-void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index, unsigned int len)
+void	copy_point(t_float_vector *source, t_float_vector *des,
+								unsigned int index, unsigned int len)
 {
-	int i;
-	float temp;
+	unsigned int		i;
+	float				temp;
 
 	i = 0;
 	if (source->size <= index + len - 1)
@@ -69,27 +70,10 @@ void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index,
 	}
 }
 
-void add_dummy_point(t_float_vector *des, int size)
+void	add_triangle(t_obj *obj, t_temp_figure_point *p)
 {
-	int i;
-
-
-	i = 0;
-	while (i < size)
-	{
-		if (!i)
-			ft_float_vector_push_back(des, 1.0);
-		else
-			ft_float_vector_push_back(des, 0.0);
-		i++;
-	}
-}
-
-
-void add_triangle(t_obj *obj, t_temp_figure_point *p)
-{
-	int i;
-	float triangle_color;
+	int		i;
+	float	triangle_color;
 
 	i = 0;
 	triangle_color = ((float)(rand()) / 0x7fffffff) / 1.0;
@@ -108,21 +92,21 @@ void add_triangle(t_obj *obj, t_temp_figure_point *p)
 	}
 }
 
-void parse_figure(t_obj *obj, char *str)
+void	parse_figure(t_obj *obj, char *str)
 {
-	t_temp_figure_point p[3];
-
-	int point_num;
+	t_temp_figure_point	p[3];
+	int					point_num;
 
 	point_num = 0;
 	while (*str)
 	{
-		while (*str && *str == ' ' && str++);
+		while (*str && *str == ' ' && str++)
+			;
 		if (!ft_isdigit(*str))
 			return ;
 		if (point_num == 0)
 			str = parse_figure_point(p, str);
-		else 
+		else
 			str = parse_figure_point((p + 2), str);
 		if (point_num >= 2)
 			add_triangle(obj, p);
@@ -131,10 +115,9 @@ void parse_figure(t_obj *obj, char *str)
 	}
 }
 
-
-t_obj *create_obj_struct()
+t_obj	*create_obj_struct(void)
 {
-	t_obj *obj;
+	t_obj	*obj;
 
 	obj = malloc(sizeof(t_obj));
 	if (!obj)
@@ -156,30 +139,18 @@ t_obj *create_obj_struct()
 	return (obj);
 }
 
-
-
-void copy_element(t_float_vector *source, t_float_vector *des, unsigned int index)
-{
-	float temp;
-
-	temp = source->data[index];
-	if (ft_float_vector_push_back(des, temp))
-			exit_error("Error: can't add elem to float vector");
-}
-
-
-t_obj			*create_object_from_file(int fd)
+t_obj	*create_object_from_file(int fd)
 {
 	t_obj	*obj;
 	char	*str;
-	
-	if (!(obj = create_obj_struct()))
-		exit(0);
 
+	obj = create_obj_struct();
+	if (!obj)
+		exit(0);
 	while (get_next_line(fd, &str) > 0)
 	{
 		if (ft_strlen(str) < 2)
-			continue ;
+			;
 		else if (str[0] == 'v' && str[1] == ' ')
 			parse_vector_f(&obj->verticles, str + 1, 3);
 		else if (str[0] == 'v' && str[1] == 't')
@@ -192,6 +163,5 @@ t_obj			*create_object_from_file(int fd)
 	}
 	obj->mix_scale = 0.0f;
 	close(fd);
-
 	return (obj);
 }
