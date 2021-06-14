@@ -105,6 +105,18 @@ void processInput(GLFWwindow *window, t_env *env, float delta_time)
 			vec3_scale(temp, cameraSpeed);
 			vec3_minus(env->camera.pos, temp, env->camera.pos);
 		}
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+	{
+		env->object->mix_scale += 0.005f;
+		if (env->object->mix_scale > 1.0)
+			env->object->mix_scale = 1.0f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	{
+		env->object->mix_scale -= 0.005f;
+		if (env->object->mix_scale < 0.0)
+			env->object->mix_scale = 0.0f;
+	}
 }
 
 
@@ -225,6 +237,18 @@ void load_obj_to_gpu(t_env *env)
 	glGenBuffers(1, &env->buffs.uvbo);
 	if (env->with_light)
 		glGenBuffers(1, &env->buffs.nbo);
+	if (env->texture.data)
+	{
+		glGenTextures(1, &env->buffs.texture);  
+		glBindTexture(GL_TEXTURE_2D, env->buffs.texture);
+
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);	
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->texture.width, env->texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, env->texture.data);
+	}
 
 	glBindVertexArray(env->buffs.vao);
 	// glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->buffs.ebo);
@@ -293,6 +317,9 @@ void start_main_loop(t_env *env)
 		glUniform3f(glGetUniformLocation(env->shader, "material.specular"), 0.5f, 0.5f, 0.5f);
 		glUniform1f(glGetUniformLocation(env->shader, "material.shininess"), 32.0f);
 	}
+	if (env->texture.data)
+		glUniform1i(glGetUniformLocation(env->shader, "texture_1"), 0);
+	glUniform1f(glGetUniformLocation(env->shader, "mix_scale"), 0.0);
 
 	glUniformMatrix4fv(glGetUniformLocation(env->shader, "projection"), 1, GL_FALSE, env->camera.proj);
 	print_matrix("proj------", env->camera.proj);
@@ -307,8 +334,6 @@ void start_main_loop(t_env *env)
 		delta_time = current_time - last_frame;
 		last_frame = current_time;
 		// printf("%f  %f\n", current_time, delta_time);
-		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
-		glUniform1f(glGetUniformLocation(env->shader, "time"), current_time);
 		// printf(" 2ERROR!  %d\n", glGetError());
 		processInput(env->window, env, delta_time);
 		glClearColor(0.2f, 0.9f, 0.3f, 1.0f);
@@ -320,6 +345,7 @@ void start_main_loop(t_env *env)
 		// printf(" 45ERROR!  %d\n", glGetError());
 		mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, env->camera.front, temp), env->camera.up, env->camera.view);
 		//print_view_status(env);
+		
 		// printf(" 5ERROR!  %d\n", glGetError());
 		CHECK_ERROR()
 
@@ -330,10 +356,12 @@ void start_main_loop(t_env *env)
 		// set_vec3(0.0, 1.0, 0.0, up);
 		// mat4_create_camera_matrix(env->camera.pos, temp, up, env->camera.view);
 
-		mat4_rotate_model_y(env->object->model, 1.0f);
+		mat4_rotate_model_y(env->object->model, 0.1f);
 
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "model"), 1, GL_FALSE, env->object->model);
 		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, GL_FALSE, env->camera.view);
+		if (env->texture.data)
+			glUniform1f(glGetUniformLocation(env->shader, "mix_scale"), env->object->mix_scale);
 		CHECK_ERROR()
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // отрисовка полигонами
 			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // возврат к исходной отрисовке
@@ -361,20 +389,26 @@ int		is_regular_file(const char *path)
 	return (S_ISREG(path_stat.st_mode));
 }
 
-int		open_file(char *path)
+int		open_file(char *path, int error_exit)
 {
 	int		fd;
 
 	if (!is_regular_file(path))
 	{
-		ft_putendl("First arg isn't file!");
-		exit(0);
+		ft_putendl("It isn't file!");
+		if (error_exit)
+			exit(0);
+		else
+			return(-1);
 	}
 	fd = open(path, O_RDONLY);
 	if (fd < 0 || read(fd, NULL, 0) < 0)
 	{
-		ft_putendl("Cannot open file specified in first arg!");
-		exit(1);
+		ft_putendl("Cannot open file!");
+		if (error_exit)
+			exit(0);
+		else
+			return(-1);
 	}
 	return fd;
 }
@@ -412,7 +446,7 @@ int		main(int argc, char **argv)
 
 	if (argc == 2)
 	{
-		fd = open_file(argv[1]);
+		fd = open_file(argv[1], 1);
 		env.object = create_object_from_file(fd);
 	}
 	else
@@ -420,6 +454,10 @@ int		main(int argc, char **argv)
 		ft_putendl("USAGE: ./command file");
 		exit(0);
 	}
+	fd = open_file(TEXTURE_PATH, 0);
+	if (fd < 0 || !parse_bmp_file(fd, &env.texture))
+		env.texture.data = 0;
+
 	env.with_light = !!env.object->normals_buffer.size;
 	// check_error(0);
 	init_app(&env);

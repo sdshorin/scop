@@ -20,14 +20,15 @@ struct Light {
 in vec3 vertex_color;  
 in vec3 normal;  
 in vec3 frag_pos;  
-in vec3 uv;  
+in vec2 uv;  
 
 
 uniform vec3 viewPos;
 uniform Material material;
 uniform Light light;
-uniform float time;
-// uniform sampler2D texture1;
+
+uniform sampler2D texture_1;
+uniform float mix_scale;
 
 void main()
 {
@@ -50,9 +51,13 @@ void main()
     
     // vec2 face_coord = vec2(1-uv.x, uv.y);
 	// FragColor = mix(texture(texture1, texCoord), texture(texture2, face_coord), mix_scale);
+    if (mix_scale > 0)
+	    FragColor = mix(texture(texture_1, uv), vec4(result, 1.0), mix_scale);
+    else
+        FragColor = vec4(result, 1.0);
 
 
-    FragColor = vec4(result, 1.0);
+    // FragColor = vec4(result, 1.0);
     // FragColor = vec4(vertex_color, 1.0);
 } 
 

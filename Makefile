@@ -11,7 +11,7 @@ INC_DIR = ./includes/
 LIBFT_DIR = ./libft/
 LFT = -L $(LIBFT_DIR) -lft
 
-SRCS_LIST = main.c parse_obj_file.c mat4.c vec3.c create_shader.c
+SRCS_LIST = main.c parse_obj_file.c mat4.c vec3.c create_shader.c parse_bmp.c
 HEADERS_LIST = scop.h
 
 SRCS = $(addprefix $(SRC_DIR),$(SRCS_LIST))

@@ -36,7 +36,7 @@ void print_obj_array(float *data, size_t size, size_t on_line);
 
 
 
-
+#define TEXTURE_PATH "res/da.bmp"
 
 
 #define VERTEX_SHADER "shaders/4.1.scop.vs"
@@ -59,7 +59,7 @@ typedef struct s_obj {
 	t_float_vector uv_buffer; // v
 	t_float_vector normals_buffer; // v
 	t_float_vector colors_buffer;
-
+	float mix_scale;
 	float model[16];
 }  t_obj;
 
@@ -90,20 +90,37 @@ typedef struct s_buffers {
 	unsigned int cbo;  // colors_buffer
 	unsigned int uvbo;  // uv_buffer
 	unsigned int nbo;  // normals_buffer
+	unsigned int texture;
 
 } t_buffers;
+
+typedef struct s_texture {
+	int width;
+	int height;
+	unsigned char *data;
+	int image_size;
+} t_texture;
+
+
+
+
 
 typedef struct s_env {
 	t_obj *object;
 	unsigned int shader;
 	t_camera camera;
 	t_buffers buffs;
+	t_texture texture;
 	GLFWwindow *window;
 	int with_light;
+
 }  t_env;
 
 
 t_obj			*create_object_from_file(int fd);
+int parse_bmp_file(int fd, t_texture *texture);
+
+
 
 void exit_error(char *error);
 

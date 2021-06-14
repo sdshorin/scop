@@ -142,7 +142,8 @@ void add_triangle(t_obj *obj, t_temp_figure_point *p)
 		if (obj->uv.size)
 			copy_point(&obj->uv, &obj->uv_buffer, p[i].uv_num, 2);
 		else
-			add_dummy_point(&obj->uv_buffer, 2); // добавлять точку чтобы было видно треугольник!
+			copy_point(&obj->verticles, &obj->uv_buffer, p[i].p_num, 2);
+			// add_dummy_point(&obj->uv_buffer, 2); // добавлять точку чтобы было видно треугольник!
 		if (obj->normals.size)
 			copy_point(&obj->normals, &obj->normals_buffer, p[i].vn_num, 3);
 		//else
@@ -151,6 +152,8 @@ void add_triangle(t_obj *obj, t_temp_figure_point *p)
 			exit_error("Error: can't add elem to colors_buffer");
 		i ++;
 	}
+	// if (!obj->uv.size)
+	// 	add_dummy_uv(&obj->uv_buffer, &obj->vert_buffer);
 }
 
 void parse_figure(t_obj *obj, char *str)
@@ -267,7 +270,7 @@ t_obj			*create_object_from_file(int fd)
 			parse_figure(obj, str + 1);
 		free(str);
 	}
-	
+	obj->mix_scale = 0.0f;
 
 	return (obj);
 }
