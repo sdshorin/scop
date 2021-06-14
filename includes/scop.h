@@ -106,6 +106,31 @@ void			exit_error(char *error);
 
 unsigned int	create_shader(char *path_vertex, char *path_fragment);
 
+void			process_input(GLFWwindow *window, t_env *env, float delta_time);
+void			mouse_callback(GLFWwindow *window, double x_pos, double y_pos);
+void			init_positions(t_env *env);
+void			init_app(t_env *env);
+void			init_camera_look(t_camera_look *look, double x_pos, \
+														double y_pos);
+t_camera_look	*get_camera_look(void);
+void			exit_error(char *error);
+
+void			check_error(int i);
+void			free_memory(t_env *env);
+int				open_file(char *path, int error_exit);
+int				is_regular_file(const char *path);
+
+void			parse_figure(t_obj *obj, char *str);
+
+GLint			get_l(int shader, char *name);
+void			start_main_loop(t_env *env);
+
+void			load_texture_to_gpu(t_env *env);
+void			load_buffers_to_gpu(t_env *env);
+void			load_obj_to_gpu(t_env *env);
+void			init_light_shader(t_env *env);
+void			init_uniforms(t_env *env);
+
 t_vec3			copy_vec3(float *src, float *dest);
 t_vec3			set_vec3(float a, float b, float c, float *dest);
 t_vec3			vec3_minus(t_vec3 a, t_vec3 b, t_vec3 dest);
@@ -124,6 +149,7 @@ t_mat4			mat4_create_camera_matrix(t_vec3 pos, t_vec3 target, \
 													t_vec3 up, t_mat4 result);
 float			*mat4_scale(float *mat, float scale);
 t_mat4			mat4_mult(t_mat4 a, t_mat4 b, t_mat4 result);
+t_mat4			mat4_copy(t_mat4 src, t_mat4 dest);
 
 t_mat4			mat4_rotate_model_y(t_mat4 model, float rotate);
 
