@@ -222,7 +222,7 @@ void init_positions(t_env *env)
 	set_vec3(0.0f, 0.0f, -1.0f, env->camera.front);
 	vec3_add(env->camera.pos, env->camera.front, temp);
 	set_vec3(0.0f, 1.0f, 0.0f, env->camera.up);
-	mat4_perspective(45.0f, 800.0f/600.0f, 0.1f, 100.0f, env->camera.proj);
+	mat4_perspective(45.0f, 800.0f/600.0f, 0.1f, 1000.0f, env->camera.proj);
 	mat4_create_camera_matrix(env->camera.pos, temp, env->camera.up, env->camera.view);
 	print_matrix("view", env->camera.view);
 	print_matrix("proj", env->camera.proj);

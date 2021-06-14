@@ -70,7 +70,7 @@ char *parse_figure_point(t_temp_figure_point *point, char*str)
 	point->p_num = 0;
 	point->uv_num = 0;
 	point->vn_num = 0;
-	while (ft_isdigit(*str))
+	while ((ft_isdigit(*str) || *str == '/') && i < 3)
 	{
 		num = ft_atoi(str) - 1;
 		while (ft_isdigit(*str) && str++);
