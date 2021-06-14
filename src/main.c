@@ -6,54 +6,63 @@ void	exit_error(char *error)
 	exit(1);
 }
 
-void	processInput(GLFWwindow *window, t_env *env, float delta_time)
+
+
+
+
+
+void	process_input_2(GLFWwindow *window, t_env *env, float camera_speed)
 {
 	float	temp[3];
-	float	cameraSpeed;
 
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, 1);
-	cameraSpeed = 20.0f * delta_time;
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		cameraSpeed *= 3.0;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		env->camera.pos[0] += env->camera.front[0] * cameraSpeed;
-		env->camera.pos[1] += env->camera.front[1] * cameraSpeed;
-		env->camera.pos[2] += env->camera.front[2] * cameraSpeed;
+		env->camera.pos[0] += env->camera.front[0] * camera_speed;
+		env->camera.pos[1] += env->camera.front[1] * camera_speed;
+		env->camera.pos[2] += env->camera.front[2] * camera_speed;
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		env->camera.pos[0] -= env->camera.front[0] * cameraSpeed;
-		env->camera.pos[1] -= env->camera.front[1] * cameraSpeed;
-		env->camera.pos[2] -= env->camera.front[2] * cameraSpeed;
+		env->camera.pos[0] -= env->camera.front[0] * camera_speed;
+		env->camera.pos[1] -= env->camera.front[1] * camera_speed;
+		env->camera.pos[2] -= env->camera.front[2] * camera_speed;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
 		vec3_cross(env->camera.front, env->camera.up, temp);
 		vec3_norm(temp);
-		vec3_scale(temp, cameraSpeed);
+		vec3_scale(temp, camera_speed);
 		vec3_minus(env->camera.pos, temp, env->camera.pos);
 	}
+}
+
+void	process_input_3(GLFWwindow *window, t_env *env, float camera_speed)
+{
+	float	temp[3];
+
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
 		vec3_cross(env->camera.front, env->camera.up, temp);
 		vec3_norm(temp);
-		vec3_scale(temp, cameraSpeed);
+		vec3_scale(temp, camera_speed);
 		vec3_add(env->camera.pos, temp, env->camera.pos);
 	}
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 	{
 		vec3_copy(env->camera.up, temp);
-		vec3_scale(temp, cameraSpeed);
+		vec3_scale(temp, camera_speed);
 		vec3_add(env->camera.pos, temp, env->camera.pos);
 	}
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 	{
 		vec3_copy(env->camera.up, temp);
-		vec3_scale(temp, cameraSpeed);
+		vec3_scale(temp, camera_speed);
 		vec3_minus(env->camera.pos, temp, env->camera.pos);
 	}
+}
+
+void	process_input_4(GLFWwindow *window, t_env *env)
+{
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 	{
 		env->object->mix_scale += 0.05f;
@@ -67,6 +76,27 @@ void	processInput(GLFWwindow *window, t_env *env, float delta_time)
 			env->object->mix_scale = 0.0f;
 	}
 }
+
+void	process_input(GLFWwindow *window, t_env *env, float delta_time)
+{
+	float	camera_speed;
+
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, 1);
+	camera_speed = 20.0f * delta_time;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		camera_speed *= 3.0;
+	process_input_2(window, env, camera_speed);
+	process_input_3(window, env, camera_speed);
+	process_input_4(window, env);
+}
+
+
+
+
+
+
+
 
 t_camera_look	*get_camera_look(void)
 {
@@ -150,27 +180,27 @@ void	init_positions(t_env *env)
 				env->object->verticles.size / 3, temp)), env->object->model);
 }
 
-void	load_obj_to_gpu(t_env *env)
+
+
+
+
+
+
+void	load_texture_to_gpu(t_env *env)
 {
-	glGenVertexArrays(1, &env->buffs.vao);
-	glGenBuffers(1, &env->buffs.vbo);
-	glGenBuffers(1, &env->buffs.cbo);
-	glGenBuffers(1, &env->buffs.uvbo);
-	if (env->with_light)
-		glGenBuffers(1, &env->buffs.nbo);
-	if (env->texture.data)
-	{
-		glGenTextures(1, &env->buffs.texture);
-		glBindTexture(GL_TEXTURE_2D, env->buffs.texture);
-		glGenerateMipmap(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->texture.width, \
-		env->texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, env->texture.data);
-	}
-	glBindVertexArray(env->buffs.vao);
+	glGenTextures(1, &env->buffs.texture);
+	glBindTexture(GL_TEXTURE_2D, env->buffs.texture);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->texture.width, \
+	env->texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, env->texture.data);
+}
+
+void	load_buffers_to_gpu(t_env *env)
+{
 	glBindBuffer(GL_ARRAY_BUFFER, env->buffs.vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * \
 			env->object->vert_buffer.size, env->object->vert_buffer.data, \
@@ -190,6 +220,20 @@ void	load_obj_to_gpu(t_env *env)
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), \
 																(void *)0);
 	glEnableVertexAttribArray(2);
+}
+
+void	load_obj_to_gpu(t_env *env)
+{
+	glGenVertexArrays(1, &env->buffs.vao);
+	glGenBuffers(1, &env->buffs.vbo);
+	glGenBuffers(1, &env->buffs.cbo);
+	glGenBuffers(1, &env->buffs.uvbo);
+	if (env->with_light)
+		glGenBuffers(1, &env->buffs.nbo);
+	if (env->texture.data)
+		load_texture_to_gpu(env);
+	glBindVertexArray(env->buffs.vao);
+	load_buffers_to_gpu(env);
 	if (env->with_light)
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, env->buffs.nbo);
@@ -202,69 +246,103 @@ void	load_obj_to_gpu(t_env *env)
 	}
 }
 
+
+
+
+
+
+
+
 GLint	get_l(int shader, char *name)
 {
 	return (glGetUniformLocation(shader, name));
 }
 
-void	start_main_loop(t_env *env)
+void	init_light_shader(t_env *env)
 {
 	float	temp[3];
-	float	delta_time;
-	float	last_frame;
 
-	glUseProgram(env->shader);
-	if (env->with_light)
-	{
-		temp[0] = -30.2f;
-		temp[1] = -1.5f;
-		temp[2] = 1.5f;
-		glUniform3f(get_l(env->shader, "light.position"), \
-											temp[0], temp[1], temp[2]);
-		glUniform3f(get_l(env->shader, "viewPos"), \
-				env->camera.pos[0], env->camera.pos[1], env->camera.pos[2]);
-		glUniform3f(get_l(env->shader, "light.ambient"), 0.2f, 0.1f, 0.31f);
-		glUniform3f(get_l(env->shader, "light.diffuse"), 1.0f, 0.9f, 0.91f);
-		glUniform3f(get_l(env->shader, "light.specular"), 0.5f, 0.5f, 0.5f);
-		glUniform3f(get_l(env->shader, "material.ambient"), 0.2f, 0.1f, 0.31f);
-		glUniform3f(get_l(env->shader, "material.diffuse"), 1.0f, 0.9f, 0.31f);
-		glUniform3f(get_l(env->shader, "material.specular"), 0.5f, 0.5f, 0.5f);
-		glUniform1f(get_l(env->shader, "material.shininess"), 32.0f);
-	}
+	temp[0] = -30.2f;
+	temp[1] = -1.5f;
+	temp[2] = 1.5f;
+	glUniform3f(get_l(env->shader, "light.position"), \
+										temp[0], temp[1], temp[2]);
+	glUniform3f(get_l(env->shader, "viewPos"), \
+			env->camera.pos[0], env->camera.pos[1], env->camera.pos[2]);
+	glUniform3f(get_l(env->shader, "light.ambient"), 0.2f, 0.1f, 0.31f);
+	glUniform3f(get_l(env->shader, "light.diffuse"), 1.0f, 0.9f, 0.91f);
+	glUniform3f(get_l(env->shader, "light.specular"), 0.5f, 0.5f, 0.5f);
+	glUniform3f(get_l(env->shader, "material.ambient"), 0.2f, 0.1f, 0.31f);
+	glUniform3f(get_l(env->shader, "material.diffuse"), 1.0f, 0.9f, 0.31f);
+	glUniform3f(get_l(env->shader, "material.specular"), 0.5f, 0.5f, 0.5f);
+	glUniform1f(get_l(env->shader, "material.shininess"), 32.0f);
+}
+
+void update_uniforms(t_env *env)
+{
+	float	temp[3];
+
+	mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, \
+					env->camera.front, temp), env->camera.up, env->camera.view);
+	mat4_rotate_model_y(env->object->model, 0.1f);
+	glUniformMatrix4fv(glGetUniformLocation(env->shader, "model"), 1, \
+												GL_FALSE, env->object->model);
+	glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, \
+												GL_FALSE, env->camera.view);
 	if (env->texture.data)
-		glUniform1i(glGetUniformLocation(env->shader, "texture_1"), 0);
+		glUniform1f(glGetUniformLocation(env->shader, "mix_scale"), \
+													env->object->mix_scale);
+}
+
+void	init_uniforms(t_env *env)
+{
 	glUniform1f(glGetUniformLocation(env->shader, "mix_scale"), 0.0);
 	glUniformMatrix4fv(get_l(env->shader, "projection"), 1, GL_FALSE, \
 														env->camera.proj);
 	glUniformMatrix4fv(get_l(env->shader, "model"), 1, GL_FALSE, \
 													env->object->model);
-	check_error(3);
+}
+
+void	step(t_env *env, float *delta_time, float *last_frame)
+{
+	float current_time;
+
+	current_time = glfwGetTime();
+	*delta_time = current_time - *last_frame;
+	*last_frame = current_time;
+	process_input(env->window, env, *delta_time);
+	glClearColor(0.2f, 0.9f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glUseProgram(env->shader);
+	glBindVertexArray(env->buffs.vao);
+	update_uniforms(env);
+	glDrawArrays(GL_TRIANGLES, 0, env->object->vert_buffer.size / 3);
+	glfwSwapBuffers(env->window);
+	glfwPollEvents();
+}
+
+void	start_main_loop(t_env *env)
+{
+	float	delta_time;
+	float	last_frame;
+
+	glUseProgram(env->shader);
+	if (env->with_light)
+		init_light_shader(env);
+	if (env->texture.data)
+		glUniform1i(glGetUniformLocation(env->shader, "texture_1"), 0);
+	init_uniforms(env);
 	while (!glfwWindowShouldClose(env->window))
 	{
 		usleep(20000);
-		float current_time = glfwGetTime();
-		delta_time = current_time - last_frame;
-		last_frame = current_time;
-		processInput(env->window, env, delta_time);
-		glClearColor(0.2f, 0.9f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(env->shader);
-		glBindVertexArray(env->buffs.vao);
-		mat4_create_camera_matrix(env->camera.pos, vec3_add(env->camera.pos, \
-					env->camera.front, temp), env->camera.up, env->camera.view);
-		mat4_rotate_model_y(env->object->model, 0.1f);
-		glUniformMatrix4fv(glGetUniformLocation(env->shader, "model"), 1, \
-												 GL_FALSE, env->object->model);
-		glUniformMatrix4fv(glGetUniformLocation(env->shader, "view"), 1, \
-													GL_FALSE, env->camera.view);
-		if (env->texture.data)
-			glUniform1f(glGetUniformLocation(env->shader, "mix_scale"), \
-														env->object->mix_scale);
-		glDrawArrays(GL_TRIANGLES, 0, env->object->vert_buffer.size / 3);
-		glfwSwapBuffers(env->window);
-		glfwPollEvents();
+		step(env, &delta_time, &last_frame);
 	}
 }
+
+
+
+
+
 
 int	is_regular_file(const char *path)
 {
