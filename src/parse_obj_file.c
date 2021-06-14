@@ -98,15 +98,14 @@ void copy_figure_point(t_temp_figure_point *dest, t_temp_figure_point *source)
 void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index, unsigned int len)
 {
 	int i;
-	int j;
 	float temp;
 
 	i = 0;
-	if (source->size <= index * len + len - 1)
+	if (source->size <= index + len - 1)
 		exit_error("Error: problem in model");
 	while (i < len)
 	{
-		temp = source->data[index * len + i];
+		temp = source->data[index + i];
 		if (ft_float_vector_push_back(des, temp))
 			exit_error("Error: can't add elem to float vector");
 		i++;
@@ -116,6 +115,7 @@ void copy_point(t_float_vector *source, t_float_vector *des, unsigned int index,
 void add_dummy_point(t_float_vector *des, int size)
 {
 	int i;
+
 
 	i = 0;
 	while (i < size)
@@ -138,14 +138,14 @@ void add_triangle(t_obj *obj, t_temp_figure_point *p)
 	triangle_color = ((float)(rand()) / 0x7fffffff) / 1.0;
 	while (i < 3)
 	{
-		copy_point(&obj->verticles, &obj->vert_buffer, p[i].p_num, 3);
+		copy_point(&obj->verticles, &obj->vert_buffer, p[i].p_num * 3, 3);
 		if (obj->uv.size)
-			copy_point(&obj->uv, &obj->uv_buffer, p[i].uv_num, 2);
+			copy_point(&obj->uv, &obj->uv_buffer, p[i].uv_num * 2, 2);
 		else
-			copy_point(&obj->verticles, &obj->uv_buffer, p[i].p_num, 2);
+			copy_point(&obj->verticles, &obj->uv_buffer, p[i].p_num * 3, 2);
 			// add_dummy_point(&obj->uv_buffer, 2); // добавлять точку чтобы было видно треугольник!
 		if (obj->normals.size)
-			copy_point(&obj->normals, &obj->normals_buffer, p[i].vn_num, 3);
+			copy_point(&obj->normals, &obj->normals_buffer, p[i].vn_num * 3, 3);
 		//else
 		//	add_dummy_point(&obj->normals_buffer, 3);
 		if (ft_float_vector_push_back(&obj->colors_buffer, triangle_color))
