@@ -2,9 +2,6 @@
 #include "scop.h"
 
 
-// typedef struct s_vec3 { float x[3]; } t_vec3;
-
-
 vec3_t vec3(float a, float b, float c) {
     vec3_t dest = malloc(sizeof(float) * 3);
 

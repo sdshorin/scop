@@ -18,7 +18,6 @@ void check_shader_compile(unsigned int shader, char *path)
 
 unsigned int create_shader_part(char *path_vertex, int type)
 {
-	current_path(9);
 	char vertexShaderSource[1024*8];
 	int fd = open(path_vertex, O_RDONLY);
 	int readed = 0;
@@ -59,7 +58,6 @@ unsigned int create_shader(char *path_vertex, char* path_fragment)
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 		printf("ERROR::SHADER::%s::COMPILATION_FAILED\n%s\n", path_vertex, infoLog);
 	}
-	// glUseProgram(shaderProgram);
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader); 
 	return shaderProgram;

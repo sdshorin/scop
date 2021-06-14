@@ -28,10 +28,7 @@
 #define PI 3.14159265
 
 
-int current_path(int i);
 void check_error(int i);
-void print_matrix(char *name, float *mat);
-void print_obj_array(float *data, size_t size, size_t on_line);
 
 
 
@@ -115,6 +112,13 @@ typedef struct s_env {
 	int with_light;
 
 }  t_env;
+
+typedef struct s_temp_figure_point {
+	unsigned int p_num;
+	unsigned int uv_num;
+	unsigned int vn_num;
+} t_temp_figure_point;
+
 
 
 t_obj			*create_object_from_file(int fd);

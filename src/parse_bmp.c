@@ -29,8 +29,10 @@ int read_bmp_data(int fd, t_texture *texture)
 	{
 		free(texture->data);
 		texture->data = 0;
+		close(fd);
 		return (0);
 	}
+	close(fd);
 	return (1);
 }
 
@@ -56,7 +58,6 @@ int parse_bmp_file(int fd, t_texture *texture)
 			return (0);
 		else
 			data_pos -= ft_min(data_pos - 54, 54);
-	close(fd);
 	return read_bmp_data(fd, texture);
 }
 
