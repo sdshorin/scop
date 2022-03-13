@@ -24,7 +24,7 @@
 # define CAMERA_SENSITIVITY 0.05f
 # define PI 3.14159265
 
-# define TEXTURE_PATH "res/da.bmp"
+# define TEXTURE_PATH "res/file.bmp"
 
 # define VERTEX_SHADER "shaders/4.1.scop.vs"
 # define FRAGMENT_SHADER "shaders/4.1.scop.fs"
